@@ -161,7 +161,63 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://source.unsplash.com/random/1920x1080/?nature);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">shisan's coding site</span></a><a class="nav-page-title" href="/"><span class="site-name">欢迎来到我的博客</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">欢迎来到我的博客</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-28T04:00:00.000Z" title="发表于 2026-03-28 12:00:00">2026-03-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-28T11:26:52.728Z" title="更新于 2026-03-28 19:26:52">2026-03-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>欢迎来到我的个人博客！这是使用 <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> 框架和 <a target="_blank" rel="noopener" href="https://butterfly.js.org/">Butterfly</a> 主题搭建的博客。</p>
+}</script><style>
+/* 核心：强制覆盖主题默认的全局背景变量，直接替换掉默认蓝底 */
+:root {
+  --global-bg: url(/img/bk.jpg) !important;
+  --background-size: cover !important;
+  --background-attachment: fixed !important;
+  --background-position: center !important;
+  --background-repeat: no-repeat !important;
+}
+/* 暗色模式背景适配，如需换图修改这里的url即可 */
+[data-theme="dark"] {
+  --global-bg: url(/img/bk.jpg) !important;
+}
+/* 强制页面根背景生效，彻底覆盖默认蓝色 */
+#web_bg {
+  background: var(--global-bg) !important;
+  background-size: var(--background-size) !important;
+  background-attachment: var(--background-attachment) !important;
+  background-position: var(--background-position) !important;
+  background-repeat: var(--background-repeat) !important;
+  z-index: -2 !important;
+}
+/* 页面和body设为透明，防止默认底色透出 */
+html, body {
+  background: transparent !important;
+}
+/* 背景遮罩，解决文字看不清，透明度0-1可调，数值越大越不透明 */
+#web_bg::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+/* 暗色模式遮罩适配 */
+[data-theme="dark"] #web_bg::before {
+  background: rgba(0, 0, 0, 0.75) !important;
+}
+/* 卡片透明度强制生效，背景自然透出不影响阅读 */
+.card-widget, .post-card, #post, #page, #archive, #category, #tag {
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+/* 暗色模式卡片适配 */
+[data-theme="dark"] .card-widget, 
+[data-theme="dark"] .post-card, 
+[data-theme="dark"] #post, 
+[data-theme="dark"] #page, 
+[data-theme="dark"] #archive, 
+[data-theme="dark"] #category, 
+[data-theme="dark"] #tag {
+  background: rgba(18, 18, 18, 0.92) !important;
+}
+</style>
+<meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bk.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://source.unsplash.com/random/1920x1080/?nature);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">shisan's coding site</span></a><a class="nav-page-title" href="/"><span class="site-name">欢迎来到我的博客</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">欢迎来到我的博客</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-28T04:00:00.000Z" title="发表于 2026-03-28 12:00:00">2026-03-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-28T11:26:52.728Z" title="更新于 2026-03-28 19:26:52">2026-03-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>欢迎来到我的个人博客！这是使用 <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> 框架和 <a target="_blank" rel="noopener" href="https://butterfly.js.org/">Butterfly</a> 主题搭建的博客。</p>
 <h2 id="关于这个博客"><a href="#关于这个博客" class="headerlink" title="关于这个博客"></a>关于这个博客</h2><p>这个博客将记录我的：</p>
 <ul>
 <li>技术学习笔记</li>
