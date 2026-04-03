@@ -1,0 +1,1668 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Reactor 框架 Flux 和 Mono 类学习指南 | shisan's coding site</title><meta name="author" content="bngel"><meta name="copyright" content="bngel"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Reactor 框架 Flux 和 Mono 类学习指南">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reactor 框架 Flux 和 Mono 类学习指南">
+<meta property="og:url" content="https://note.shisan.me/2026/04/03/doubao_reactor_flux_mono_learning/index.html">
+<meta property="og:site_name" content="shisan&#39;s coding site">
+<meta property="og:description" content="Reactor 框架 Flux 和 Mono 类学习指南">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://note.shisan.me/img/avatar.png">
+<meta property="article:published_time" content="2026-04-03T15:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-03T14:55:09.512Z">
+<meta property="article:author" content="bngel">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Reactor">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://note.shisan.me/img/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Reactor 框架 Flux 和 Mono 类学习指南",
+  "url": "https://note.shisan.me/2026/04/03/doubao_reactor_flux_mono_learning/",
+  "image": "https://note.shisan.me/img/avatar.png",
+  "datePublished": "2026-04-03T15:00:00.000Z",
+  "dateModified": "2026-04-03T14:55:09.512Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "bngel",
+      "url": "https://note.shisan.me"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://note.shisan.me/2026/04/03/doubao_reactor_flux_mono_learning/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Reactor 框架 Flux 和 Mono 类学习指南',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><style>
+/* 核心：强制覆盖主题默认的全局背景变量，直接替换掉默认蓝底 */
+:root {
+  --global-bg: url(/img/bk.jpg) !important;
+  --background-size: cover !important;
+  --background-attachment: fixed !important;
+  --background-position: center !important;
+  --background-repeat: no-repeat !important;
+}
+/* 暗色模式背景适配，如需换图修改这里的url即可 */
+[data-theme="dark"] {
+  --global-bg: url(/img/bk.jpg) !important;
+}
+/* 强制页面根背景生效，彻底覆盖默认蓝色 */
+#web_bg {
+  background: var(--global-bg) !important;
+  background-size: var(--background-size) !important;
+  background-attachment: var(--background-attachment) !important;
+  background-position: var(--background-position) !important;
+  background-repeat: var(--background-repeat) !important;
+  z-index: -2 !important;
+}
+/* 页面和body设为透明，防止默认底色透出 */
+html, body {
+  background: transparent !important;
+}
+/* 背景遮罩，解决文字看不清，透明度0-1可调，数值越大越不透明 */
+#web_bg::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+/* 暗色模式遮罩适配 */
+[data-theme="dark"] #web_bg::before {
+  background: rgba(0, 0, 0, 0.75) !important;
+}
+/* 卡片透明度强制生效，背景自然透出不影响阅读 */
+.card-widget, .post-card, #post, #page, #archive, #category, #tag {
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+/* 暗色模式卡片适配 */
+[data-theme="dark"] .card-widget, 
+[data-theme="dark"] .post-card, 
+[data-theme="dark"] #post, 
+[data-theme="dark"] #page, 
+[data-theme="dark"] #archive, 
+[data-theme="dark"] #category, 
+[data-theme="dark"] #tag {
+  background: rgba(18, 18, 18, 0.92) !important;
+}
+</style>
+<meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bk.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default_top_img.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">shisan's coding site</span></a><a class="nav-page-title" href="/"><span class="site-name">Reactor 框架 Flux 和 Mono 类学习指南</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Reactor 框架 Flux 和 Mono 类学习指南</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-03T15:00:00.000Z" title="发表于 2026-04-03 23:00:00">2026-04-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-03T14:55:09.512Z" title="更新于 2026-04-03 22:55:09">2026-04-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="一、Reactor-框架概述与核心概念"><a href="#一、Reactor-框架概述与核心概念" class="headerlink" title="一、Reactor 框架概述与核心概念"></a>一、Reactor 框架概述与核心概念</h2><h3 id="1-1-Reactor-框架简介与最新版本"><a href="#1-1-Reactor-框架简介与最新版本" class="headerlink" title="1.1 Reactor 框架简介与最新版本"></a>1.1 Reactor 框架简介与最新版本</h3><p>Reactor 是一个专为 JVM 设计的完全非阻塞反应式编程基础框架，具有高效的需求管理（背压管理）能力。它直接集成了 Java 8 的函数式 API，特别是 CompletableFuture、Stream 和 Duration。截至 2026 年 4 月，Reactor 的最新版本是 3.8.4，于 2026 年 3 月 10 日发布<a target="_blank" rel="noopener" href="https://java.libhunt.com/reactor-core-changelog">(2)</a>。</p>
+<p>Reactor 的设计目标是解决 JVM 上 “经典” 异步方法的缺陷，同时专注于几个关键方面：<strong>组合性和可读性</strong>、丰富的操作符集合、惰性执行模型以及强大的背压管理机制。作为 Spring 生态系统中反应式编程栈的基础，Reactor 在 Spring WebFlux、Spring Data、Spring Cloud Gateway 等项目中发挥着核心作用<a target="_blank" rel="noopener" href="https://spring.io/reactive/">(47)</a>。</p>
+<h3 id="1-2-反应式编程基础概念"><a href="#1-2-反应式编程基础概念" class="headerlink" title="1.2 反应式编程基础概念"></a>1.2 反应式编程基础概念</h3><p>反应式编程是一种关注数据流和变化传播的异步编程范式。与传统的命令式编程不同，反应式编程允许轻松表达静态（如数组）或动态（如事件发射器）数据流。</p>
+<p>在反应式编程模型中，核心概念是<strong>Publisher-Subscriber</strong>模式，这与熟悉的 Iterator 设计模式有对偶关系。主要区别在于：Iterator 是拉取式的，而反应式流是推送式的。在反应式流中，是 Publisher 主动通知 Subscriber 新值的到来，这种推送特性是实现反应式的关键。</p>
+<p>反应式流的另一个重要概念是<strong>背压（Backpressure）</strong>。当生产者（Publisher）产生数据的速度超过消费者（Subscriber）的处理能力时，可能导致内存溢出或系统崩溃。背压机制通过反馈信号让下游能够向上游传达自己的处理能力，从而实现流量控制<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14531523">(98)</a>。</p>
+<h3 id="1-3-Reactor-与其他反应式库的对比"><a href="#1-3-Reactor-与其他反应式库的对比" class="headerlink" title="1.3 Reactor 与其他反应式库的对比"></a>1.3 Reactor 与其他反应式库的对比</h3><p>在 Java 生态系统中，主要有两个反应式编程库：<strong>Reactor</strong>和<strong>RxJava</strong>。它们在概念上非常相似，但在某些方面存在重要差异：</p>
+<ul>
+<li><p><strong>类型系统</strong>：RxJava 使用 Observable 和 Single，而 Reactor 使用 Flux 和 Mono<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42567046/article/details/141204237">(40)</a></p>
+</li>
+<li><p><strong>设计目标</strong>：Reactor 更紧密地集成 Spring 生态系统，专为服务器端 Java 设计；RxJava 历史更悠久，包括 Android 开发<a target="_blank" rel="noopener" href="https://www.developers.dev/tech-talk/java-reactive-programming.html">(41)</a></p>
+</li>
+<li><p><strong>规范遵循</strong>：Reactor 诞生在反应式流规范制定之后，从一开始就严格按照 Reactive Streams 规范设计；RxJava 2.x 才开始支持 Reactive Streams 规范<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14530587">(52)</a></p>
+</li>
+<li><p><strong>性能表现</strong>：根据基准测试，RxJava 在某些场景下性能略优于 Reactor，但 Reactor 在与 Spring 生态系统集成时表现更好<a target="_blank" rel="noopener" href="https://inria.hal.science/hal-03409277/file/paper-author-version.pdf">(59)</a></p>
+</li>
+</ul>
+<p>其他相关技术包括<strong>Vert.x</strong>（多语言响应式工具包 &#x2F; 框架）和<strong>Akka Streams</strong>（基于 Actor 模型的流处理），它们各有特点但应用场景不同<a target="_blank" rel="noopener" href="https://blog.csdn.net/u014391334/article/details/147055016">(53)</a>。</p>
+<h2 id="二、Flux-和-Mono-的设计哲学与核心特性"><a href="#二、Flux-和-Mono-的设计哲学与核心特性" class="headerlink" title="二、Flux 和 Mono 的设计哲学与核心特性"></a>二、Flux 和 Mono 的设计哲学与核心特性</h2><h3 id="2-1-Flux-类：0-到-N-个元素的异步序列"><a href="#2-1-Flux-类：0-到-N-个元素的异步序列" class="headerlink" title="2.1 Flux 类：0 到 N 个元素的异步序列"></a>2.1 Flux 类：0 到 N 个元素的异步序列</h3><p><strong>Flux</strong>是 Reactor 中表示 0 到 N 个元素异步序列的核心类。它实现了 Publisher 接口，能够发出三种类型的信号：元素值（onNext）、完成信号（onComplete）和错误信号（onError）。</p>
+<p>Flux 的设计哲学体现在以下几个方面：</p>
+<ol>
+<li><p><strong>无限可能性</strong>：Flux 可以表示空序列、有限序列或无限序列。例如，Flux.empty () 表示空序列，Flux.range (1, 10) 表示包含 10 个元素的有限序列，而 Flux.interval (Duration.ofSeconds (1)) 表示每秒发出一个递增数字的无限序列。</p>
+</li>
+<li><p><strong>丰富的操作符支持</strong>：Flux 提供了超过 150 个组合式操作符，形成链式、声明式的数据处理管道。包括 map ()&#x2F;flatMap () 用于同步 &#x2F; 异步转换，filter () 用于谓词筛选，take (n)&#x2F;skip (n) 用于控制窗口大小，reduce ()&#x2F;collectList () 用于聚合等<a target="_blank" rel="noopener" href="https://wenku.csdn.net/doc/2ejkz8dtd6">(64)</a>。</p>
+</li>
+<li><p><strong>背压管理</strong>：作为 Reactive Streams 规范的实现，Flux 内置支持背压机制。通过 limitRate ()、onBackpressureBuffer () 等操作符，可以精确控制数据流量<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14531567">(181)</a>。</p>
+</li>
+<li><p><strong>冷流特性</strong>：默认情况下，Flux 是冷流（Cold Sequence），即每个订阅者都会触发新的数据生成。例如，如果源是 HTTP 调用，每个订阅者都会触发新的网络请求。</p>
+</li>
+</ol>
+<h3 id="2-2-Mono-类：0-或-1-个元素的异步结果"><a href="#2-2-Mono-类：0-或-1-个元素的异步结果" class="headerlink" title="2.2 Mono 类：0 或 1 个元素的异步结果"></a>2.2 Mono 类：0 或 1 个元素的异步结果</h3><p><strong>Mono</strong>是 Reactor 中表示最多一个元素（0 或 1 个）异步结果的特殊类。它同样实现了 Publisher 接口，但行为与 Flux 有本质区别：</p>
+<ol>
+<li><p><strong>单一性保证</strong>：Mono 最多只能发出一个 onNext 信号，然后必须跟随 onComplete 信号，或者直接发出 onError 信号。Mono.never () 是唯一的例外，它不发出任何信号。</p>
+</li>
+<li><p><strong>语义清晰</strong>：Mono 的设计反映了对异步处理基数的语义理解。例如，HTTP 请求只产生一个响应，因此将其结果表示为 Mono比 Flux更有意义，因为它只提供与零个或一个元素上下文相关的操作符。</p>
+</li>
+<li><p><strong>操作符精简</strong>：Mono 只提供了 Flux 操作符的一个子集，某些操作符（特别是那些将 Mono 与另一个 Publisher 组合的操作符）会切换到 Flux。例如，Mono.concatWith (Publisher) 返回 Flux，而 Mono.then (Mono) 返回另一个 Mono。</p>
+</li>
+<li><p><strong>延迟执行</strong>：Mono 可以用于表示没有值的异步过程，只包含完成概念（类似于 Runnable）。可以使用 empty Mono来创建这种类型。</p>
+</li>
+</ol>
+<h3 id="2-3-设计哲学：为何选择双轨制设计"><a href="#2-3-设计哲学：为何选择双轨制设计" class="headerlink" title="2.3 设计哲学：为何选择双轨制设计"></a>2.3 设计哲学：为何选择双轨制设计</h3><p>Reactor 选择 Flux 和 Mono 双轨制设计而非统一类型，主要基于以下考虑：</p>
+<ol>
+<li><p><strong>语义表达能力</strong>：这种区分将语义信息带入类型系统，明确指示异步处理的大致基数。这有助于在编译时发现潜在问题，例如对 Mono 执行 count 操作是没有意义的。</p>
+</li>
+<li><p><strong>操作符安全性</strong>：不同基数的处理需要不同的操作符集合。Mono 只提供与 0 或 1 个元素相关的操作符，避免了不相关操作符的出现，提高了代码的安全性和可读性。</p>
+</li>
+<li><p><strong>性能优化</strong>：针对不同基数的优化策略不同。Mono 的实现可以针对单一结果进行优化，而不需要处理 Flux 的复杂情况，如背压管理、多元素聚合等<a target="_blank" rel="noopener" href="https://wenku.csdn.net/doc/86ja8vqffr">(11)</a>。</p>
+</li>
+<li><p><strong>使用场景匹配</strong>：在实际应用中，许多操作天然就是产生单一结果的（如数据库单行查询、HTTP 请求等），使用 Mono 更符合直觉；而有些操作天然就是产生多个结果的（如流式数据、事件流等），使用 Flux 更合适<a target="_blank" rel="noopener" href="https://wenku.csdn.net/doc/86ja8vqffr">(11)</a>。</p>
+</li>
+</ol>
+<h3 id="2-4-核心特性对比分析"><a href="#2-4-核心特性对比分析" class="headerlink" title="2.4 核心特性对比分析"></a>2.4 核心特性对比分析</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Flux</th>
+<th>Mono</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>元素数量</td>
+<td>0 到 N 个（N≥0）</td>
+<td>0 或 1 个</td>
+</tr>
+<tr>
+<td>完成信号</td>
+<td>可选（无限序列无完成信号）</td>
+<td>必须有（在 onNext 后或直接）</td>
+</tr>
+<tr>
+<td>错误信号</td>
+<td>可选（可以不发生错误）</td>
+<td>可选（可以成功完成）</td>
+</tr>
+<tr>
+<td>操作符数量</td>
+<td>超过 150 个</td>
+<td>约 50 个（Flux 的子集）</td>
+</tr>
+<tr>
+<td>背压支持</td>
+<td>内置支持</td>
+<td>无背压概念（只有一个元素）</td>
+</tr>
+<tr>
+<td>冷 &#x2F; 热流</td>
+<td>默认冷流</td>
+<td>默认冷流</td>
+</tr>
+<tr>
+<td>转换能力</td>
+<td>可转换为 Mono（如 count ()）</td>
+<td>可转换为 Flux（如 fluxWith ()）</td>
+</tr>
+</tbody></table>
+<p>这种设计使得 Reactor 能够灵活应对各种异步场景，同时保持类型安全和性能优化。</p>
+<h2 id="三、Flux-和-Mono-在-AI-智能体框架中的应用场景"><a href="#三、Flux-和-Mono-在-AI-智能体框架中的应用场景" class="headerlink" title="三、Flux 和 Mono 在 AI 智能体框架中的应用场景"></a>三、Flux 和 Mono 在 AI 智能体框架中的应用场景</h2><h3 id="3-1-AI-智能体框架中的数据流特征"><a href="#3-1-AI-智能体框架中的数据流特征" class="headerlink" title="3.1 AI 智能体框架中的数据流特征"></a>3.1 AI 智能体框架中的数据流特征</h3><p>在 AI 智能体框架中，数据流呈现出多样化的特征，这些特征正好与 Flux 和 Mono 的设计理念高度契合：</p>
+<ol>
+<li><p><strong>连续感知流</strong>：智能体与环境的交互通常产生连续的观察流。例如，机器人的传感器数据、游戏智能体的视觉输入、对话系统的用户输入流等，这些都可以自然地表示为 Flux。</p>
+</li>
+<li><p><strong>单次决策输出</strong>：智能体的决策过程通常产生单次或空的动作输出。例如，在每个时间步决定下一步行动、回答用户问题、执行工具调用等，这些适合用 Mono 表示<a target="_blank" rel="noopener" href="https://blog.csdn.net/m290345792/article/details/151904558">(34)</a>。</p>
+</li>
+<li><p><strong>多智能体协作流</strong>：在多智能体系统中，智能体之间需要交换消息和协调行动。每个智能体可以看作是一个数据流节点，接收其他智能体的消息流（Flux）并产生响应（Mono 或 Flux）<a target="_blank" rel="noopener" href="http://hdlgc.xml-journal.net//cn/article/pdf/preview/10.13832/j.jnpe.2024.080030.pdf">(146)</a>。</p>
+</li>
+<li><p><strong>事件驱动架构</strong>：AI 智能体系统通常采用事件驱动架构，包括外部事件（如用户交互、传感器触发）和内部事件（如状态变化、决策完成）。这些事件流可以用 Flux 表示<a target="_blank" rel="noopener" href="https://blog.csdn.net/xxue345678/article/details/157940647">(170)</a>。</p>
+</li>
+</ol>
+<h3 id="3-2-典型应用场景详解"><a href="#3-2-典型应用场景详解" class="headerlink" title="3.2 典型应用场景详解"></a>3.2 典型应用场景详解</h3><h4 id="3-2-1-环境感知与状态更新"><a href="#3-2-1-环境感知与状态更新" class="headerlink" title="3.2.1 环境感知与状态更新"></a>3.2.1 环境感知与状态更新</h4><p>在智能体的环境感知系统中，传感器数据通常以流的形式持续产生。例如：</p>
+<p><strong>场景描述</strong>：自动驾驶车辆的感知系统需要处理来自激光雷达、摄像头、毫米波雷达等多种传感器的数据流。</p>
+<p><strong>Flux 应用</strong>：</p>
+<ul>
+<li><p>激光雷达数据：Flux，表示连续的点云数据</p>
+</li>
+<li><p>摄像头视频流：Flux，表示连续的图像帧</p>
+</li>
+<li><p>传感器融合结果：Flux，表示融合后的环境状态</p>
+</li>
+</ul>
+<p><strong>代码示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// 模拟激光雷达数据生成</span><br><span class="line"></span><br><span class="line">Flux\&lt;PointCloud&gt; lidarStream = Flux.interval(Duration.ofMillis(100))</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(tick -&gt; generatePointCloud());</span><br><span class="line"></span><br><span class="line">// 模拟摄像头视频流</span><br><span class="line"></span><br><span class="line">Flux\&lt;ImageFrame&gt; cameraStream = Flux.interval(Duration.ofMillis(33))</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(tick -&gt; captureImageFrame());</span><br><span class="line"></span><br><span class="line">// 传感器融合（使用combineLatest）</span><br><span class="line"></span><br><span class="line">Flux\&lt;EnvironmentState&gt; fusedStream = Flux.combineLatest(</span><br><span class="line"></span><br><span class="line">&amp;#x20;   lidarStream,&amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   cameraStream,&amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   (lidar, camera) -&gt; new EnvironmentState(lidar, camera)</span><br><span class="line"></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-2-决策推理与动作执行"><a href="#3-2-2-决策推理与动作执行" class="headerlink" title="3.2.2 决策推理与动作执行"></a>3.2.2 决策推理与动作执行</h4><p>智能体的决策过程通常是一个从感知到动作的转换过程：</p>
+<p><strong>场景描述</strong>：游戏智能体需要根据当前游戏状态做出下一步行动决策。</p>
+<p><strong>Mono 应用</strong>：</p>
+<ul>
+<li><p>当前状态评估：Mono</p>
+</li>
+<li><p>动作选择：Mono</p>
+</li>
+<li><p>工具调用结果：Mono</p>
+</li>
+</ul>
+<p><strong>代码示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">// 评估当前游戏状态</span><br><span class="line"></span><br><span class="line">Mono\&lt;GameStateEvaluation&gt; evaluateState(GameState state) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   return Mono.fromCallable(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       // 复杂的状态评估逻辑</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return new GameStateEvaluation(state);</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 根据评估结果选择动作</span><br><span class="line"></span><br><span class="line">Mono\&lt;Action&gt; chooseAction(GameStateEvaluation evaluation) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   return Mono.fromCallable(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       // 决策逻辑</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return evaluation.isSafe() ? Action.MOVE : Action.STOP;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 执行动作（可能调用外部工具）</span><br><span class="line"></span><br><span class="line">Mono\&lt;ToolResult&gt; executeAction(Action action) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   return Mono.fromCallable(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       // 执行动作并返回结果</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return new ToolResult(&quot;Action executed: &quot; + action);</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 完整的决策链</span><br><span class="line"></span><br><span class="line">Mono\&lt;ToolResult&gt; decisionChain(GameState initialState) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   return evaluateState(initialState)</span><br><span class="line"></span><br><span class="line">&amp;#x20;       .flatMap(this::chooseAction)</span><br><span class="line"></span><br><span class="line">&amp;#x20;       .flatMap(this::executeAction);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-3-多智能体通信与协调"><a href="#3-2-3-多智能体通信与协调" class="headerlink" title="3.2.3 多智能体通信与协调"></a>3.2.3 多智能体通信与协调</h4><p>在多智能体系统中，智能体之间需要通过消息进行通信和协调：</p>
+<p><strong>场景描述</strong>：一个多智能体协作系统，包括任务分配、进度跟踪和结果汇总。</p>
+<p><strong>Flux 和 Mono 结合应用</strong>：</p>
+<ul>
+<li><p>接收消息流：Flux</p>
+</li>
+<li><p>处理消息：Mono</p>
+</li>
+<li><p>广播通知：Flux</p>
+</li>
+</ul>
+<p><strong>代码示例</strong>（基于阿里 AgentScope Java 框架）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">// 消息中心（MsgHub）实现</span><br><span class="line"></span><br><span class="line">public class MsgHub &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private final FluxProcessor\&lt;Message&gt; messageProcessor =&amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       FluxProcessor.create(FluxSink.OverflowStrategy.BUFFER);</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   // 发布消息</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public Mono\&lt;Void&gt; publish(Message message) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return Mono.fromRunnable(() -&gt;&amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           messageProcessor.onNext(message)</span><br><span class="line"></span><br><span class="line">&amp;#x20;       );</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   // 按智能体ID订阅消息</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public Flux\&lt;Message&gt; subscribe(String agentId) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return messageProcessor</span><br><span class="line"></span><br><span class="line">&amp;#x20;           .filter(msg -&gt; msg.getTargetAgentId().equals(agentId));</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 智能体示例</span><br><span class="line"></span><br><span class="line">public class WorkerAgent &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private final String id;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private final MsgHub msgHub;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public WorkerAgent(String id, MsgHub msgHub) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       this.id = id;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       this.msgHub = msgHub;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   // 启动智能体，开始处理消息</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public void start() &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       msgHub.subscribe(id)</span><br><span class="line"></span><br><span class="line">&amp;#x20;           .flatMap(this::processMessage)</span><br><span class="line"></span><br><span class="line">&amp;#x20;           .subscribe();</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   // 处理消息（返回处理结果）</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private Mono\&lt;Response&gt; processMessage(Message msg) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return Mono.fromCallable(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           // 处理消息逻辑</span><br><span class="line"></span><br><span class="line">&amp;#x20;           return new Response(&quot;Processed: &quot; + msg.getContent());</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125;);</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-4-实时学习与模型更新"><a href="#3-2-4-实时学习与模型更新" class="headerlink" title="3.2.4 实时学习与模型更新"></a>3.2.4 实时学习与模型更新</h4><p>AI 智能体系统中的学习过程通常涉及持续的数据流和间歇性的模型更新：</p>
+<p><strong>场景描述</strong>：强化学习智能体需要从环境中获取连续的奖励流，并定期更新策略模型。</p>
+<p><strong>Flux 和 Mono 结合应用</strong>：</p>
+<ul>
+<li><p>奖励流：Flux</p>
+</li>
+<li><p>模型更新：Mono</p>
+</li>
+<li><p>训练过程：Flux</p>
+</li>
+</ul>
+<p><strong>代码示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">// 模拟奖励流（来自环境）</span><br><span class="line"></span><br><span class="line">Flux\&lt;Reward&gt; rewardStream = Flux.interval(Duration.ofSeconds(1))</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(tick -&gt; new Reward(Math.random() \* 10));</span><br><span class="line"></span><br><span class="line">// 策略模型（简化表示）</span><br><span class="line"></span><br><span class="line">class PolicyModel &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private double value;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public void update(double reward) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       value = value \* 0.9 + reward \* 0.1;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public double getValue() &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return value;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 模型更新器</span><br><span class="line"></span><br><span class="line">class ModelUpdater &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private final PolicyModel model = new PolicyModel();</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   // 处理奖励流，定期更新模型</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public Flux\&lt;TrainingProgress&gt; processRewards(Flux\&lt;Reward&gt; rewards) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return rewards</span><br><span class="line"></span><br><span class="line">&amp;#x20;           .buffer(Duration.ofSeconds(10)) // 每10秒聚合一次奖励</span><br><span class="line"></span><br><span class="line">&amp;#x20;           .flatMap(rewardList -&gt; updateModel(rewardList));</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   // 批量更新模型</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private Mono\&lt;TrainingProgress&gt; updateModel(List\&lt;Reward&gt; rewards) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return Mono.fromCallable(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           double avgReward = rewards.stream()</span><br><span class="line"></span><br><span class="line">&amp;#x20;               .mapToDouble(Reward::getValue)</span><br><span class="line"></span><br><span class="line">&amp;#x20;               .average()</span><br><span class="line"></span><br><span class="line">&amp;#x20;               .orElse(0);</span><br><span class="line"></span><br><span class="line">&amp;#x20;          &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           model.update(avgReward);</span><br><span class="line"></span><br><span class="line">&amp;#x20;          &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           return new TrainingProgress(</span><br><span class="line"></span><br><span class="line">&amp;#x20;               model.getValue(),&amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;               avgReward,&amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;               rewards.size()</span><br><span class="line"></span><br><span class="line">&amp;#x20;           );</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125;);</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 使用示例</span><br><span class="line"></span><br><span class="line">ModelUpdater updater = new ModelUpdater();</span><br><span class="line"></span><br><span class="line">Flux\&lt;TrainingProgress&gt; trainingProgress = updater.processRewards(rewardStream);</span><br><span class="line"></span><br><span class="line">trainingProgress.subscribe(progress -&gt;&amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   System.out.println(&quot;Model value: &quot; + progress.getModelValue() +&amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &quot;, Average reward: &quot; + progress.getAvgReward())</span><br><span class="line"></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-与-ReAct-模式的结合应用"><a href="#3-3-与-ReAct-模式的结合应用" class="headerlink" title="3.3 与 ReAct 模式的结合应用"></a>3.3 与 ReAct 模式的结合应用</h3><p>ReAct（Reasoning and Acting）模式是一种将推理与行动相结合的 AI 智能体设计范式，它与 Reactor 框架的数据流模型高度契合：</p>
+<p><strong>ReAct 核心流程</strong>：</p>
+<ol>
+<li><p><strong>思考（Thought）</strong>：智能体分析当前状态，生成推理过程</p>
+</li>
+<li><p><strong>行动（Action）</strong>：根据推理结果执行工具调用或其他动作</p>
+</li>
+<li><p><strong>观察（Observation）</strong>：获取行动结果，更新状态</p>
+</li>
+</ol>
+<p><strong>在 Reactor 中的实现</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">// ReAct智能体核心逻辑</span><br><span class="line"></span><br><span class="line">public class ReActAgent &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private final MsgHub msgHub;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public ReActAgent(MsgHub msgHub) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       this.msgHub = msgHub;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   // 处理用户查询（返回最终答案）</span><br><span class="line"></span><br><span class="line">&amp;#x20;   public Mono\&lt;String&gt; processQuery(String query) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return Mono.defer(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           // 初始思考：分析查询</span><br><span class="line"></span><br><span class="line">&amp;#x20;           String initialThought = &quot;I need to answer: &quot; + query;</span><br><span class="line"></span><br><span class="line">&amp;#x20;          &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           // 开始ReAct循环</span><br><span class="line"></span><br><span class="line">&amp;#x20;           return reactLoop(initialThought, query, 0);</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125;);</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;  &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   // ReAct循环（递归实现）</span><br><span class="line"></span><br><span class="line">&amp;#x20;   private Mono\&lt;String&gt; reactLoop(String thought, String query, int iteration) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       if (iteration &gt;= 5) &#123; // 限制最大迭代次数</span><br><span class="line"></span><br><span class="line">&amp;#x20;           return Mono.just(&quot;Max iterations reached. Final answer: &quot; + thought);</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;      &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       // 1. 思考阶段：分析当前状态</span><br><span class="line"></span><br><span class="line">&amp;#x20;       Mono\&lt;ActionPlan&gt; think = Mono.fromCallable(() -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           System.out.println(&quot;Thinking: &quot; + thought);</span><br><span class="line"></span><br><span class="line">&amp;#x20;           return new ActionPlan(&quot;tool&quot;, &quot;param&quot;); // 简化的行动计划</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125;);</span><br><span class="line"></span><br><span class="line">&amp;#x20;      &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       // 2. 行动阶段：执行工具调用</span><br><span class="line"></span><br><span class="line">&amp;#x20;       Mono\&lt;ToolResult&gt; act = think.flatMap(plan -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           System.out.println(&quot;Acting: &quot; + plan);</span><br><span class="line"></span><br><span class="line">&amp;#x20;           return Mono.just(new ToolResult(&quot;tool result&quot;)); // 模拟工具结果</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125;);</span><br><span class="line"></span><br><span class="line">&amp;#x20;      &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       // 3. 观察阶段：处理结果并决定下一步</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return act.flatMap(result -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           String newThought = thought + &quot; -&gt; &quot; + result.getResult();</span><br><span class="line"></span><br><span class="line">&amp;#x20;           System.out.println(&quot;Observation: &quot; + newThought);</span><br><span class="line"></span><br><span class="line">&amp;#x20;          &amp;#x20;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           // 判断是否需要继续循环</span><br><span class="line"></span><br><span class="line">&amp;#x20;           if (result.isFinal()) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;               return Mono.just(newThought);</span><br><span class="line"></span><br><span class="line">&amp;#x20;           &#125; else &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;               return reactLoop(newThought, query, iteration + 1);</span><br><span class="line"></span><br><span class="line">&amp;#x20;           &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125;);</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种结合使得智能体能够：</p>
+<ul>
+<li><p><strong>灵活应对复杂任务</strong>：通过思考 - 行动 - 观察循环，智能体可以逐步逼近答案</p>
+</li>
+<li><p><strong>支持流式处理</strong>：思考过程可以实时反馈给用户，提供更好的交互体验</p>
+</li>
+<li><p><strong>错误恢复能力</strong>：通过 Mono 的错误处理机制，可以优雅地处理工具调用失败</p>
+</li>
+<li><p><strong>并发处理</strong>：多个智能体可以并行处理不同的任务，通过消息中心协调</p>
+</li>
+</ul>
+<h2 id="四、学习路径规划与实践项目"><a href="#四、学习路径规划与实践项目" class="headerlink" title="四、学习路径规划与实践项目"></a>四、学习路径规划与实践项目</h2><h3 id="4-1-学习阶段划分与时间安排"><a href="#4-1-学习阶段划分与时间安排" class="headerlink" title="4.1 学习阶段划分与时间安排"></a>4.1 学习阶段划分与时间安排</h3><p>基于你的技术背景（Java）和学习目标，我建议采用渐进式学习路径，总学习时长约为 12 周：</p>
+<h4 id="4-1-1-第一阶段：基础准备（2-周）"><a href="#4-1-1-第一阶段：基础准备（2-周）" class="headerlink" title="4.1.1 第一阶段：基础准备（2 周）"></a>4.1.1 第一阶段：基础准备（2 周）</h4><p><strong>目标</strong>：掌握 Java 函数式编程基础和异步编程概念</p>
+<p><strong>学习内容</strong>：</p>
+<ol>
+<li><p>Java 8 + 函数式接口（Predicate、Function、Consumer 等）</p>
+</li>
+<li><p>Lambda 表达式和方法引用</p>
+</li>
+<li><p>Stream API 基础</p>
+</li>
+<li><p>CompletableFuture 异步编程</p>
+</li>
+<li><p>反应式编程基本概念</p>
+</li>
+</ol>
+<p><strong>学习资源</strong>：</p>
+<ul>
+<li><p>《Java 8 实战》（书籍）</p>
+</li>
+<li><p>Oracle 官方 Java 文档</p>
+</li>
+<li><p>在线编程练习平台（如 LeetCode 函数式编程专题）</p>
+</li>
+</ul>
+<p><strong>每周安排</strong>：</p>
+<ul>
+<li><p>第 1 周：函数式编程基础（每天 2 小时）</p>
+</li>
+<li><p>第 2 周：CompletableFuture 和异步编程（每天 2 小时）</p>
+</li>
+</ul>
+<h4 id="4-1-2-第二阶段：Reactor-核心概念（3-周）"><a href="#4-1-2-第二阶段：Reactor-核心概念（3-周）" class="headerlink" title="4.1.2 第二阶段：Reactor 核心概念（3 周）"></a>4.1.2 第二阶段：Reactor 核心概念（3 周）</h4><p><strong>目标</strong>：深入理解 Flux 和 Mono 的核心概念和基本用法</p>
+<p><strong>学习内容</strong>：</p>
+<ol>
+<li><p>Reactor 架构概览和设计哲学</p>
+</li>
+<li><p>Flux 和 Mono 的创建方式</p>
+</li>
+<li><p>基本操作符（map、filter、flatMap 等）</p>
+</li>
+<li><p>订阅机制和线程模型</p>
+</li>
+<li><p>错误处理策略</p>
+</li>
+</ol>
+<p><strong>学习资源</strong>：</p>
+<ul>
+<li><p>Reactor 官方文档（3.8.3 版本）<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/reactor-core-reference-guide-3.8.3.pdf">(1)</a></p>
+</li>
+<li><p>《Reactive Programming with Reactor》（书籍）</p>
+</li>
+<li><p>Spring 官方教程</p>
+</li>
+</ul>
+<p><strong>每周安排</strong>：</p>
+<ul>
+<li><p>第 3 周：Flux 和 Mono 基础（每天 2.5 小时）</p>
+</li>
+<li><p>第 4 周：操作符深入（每天 2.5 小时）</p>
+</li>
+<li><p>第 5 周：订阅和错误处理（每天 2.5 小时）</p>
+</li>
+</ul>
+<h4 id="4-1-3-第三阶段：高级特性（3-周）"><a href="#4-1-3-第三阶段：高级特性（3-周）" class="headerlink" title="4.1.3 第三阶段：高级特性（3 周）"></a>4.1.3 第三阶段：高级特性（3 周）</h4><p><strong>目标</strong>：掌握 Reactor 的高级特性和最佳实践</p>
+<p><strong>学习内容</strong>：</p>
+<ol>
+<li><p>背压机制和流量控制</p>
+</li>
+<li><p>高级操作符（zip、combineLatest、reduce 等）</p>
+</li>
+<li><p>线程调度和并发模型</p>
+</li>
+<li><p>Sinks API 和热流管理</p>
+</li>
+<li><p>性能优化策略</p>
+</li>
+</ol>
+<p><strong>学习资源</strong>：</p>
+<ul>
+<li><p>Reactor 核心源码分析</p>
+</li>
+<li><p>相关技术博客和论文</p>
+</li>
+<li><p>性能基准测试报告</p>
+</li>
+</ul>
+<p><strong>每周安排</strong>：</p>
+<ul>
+<li><p>第 6 周：背压和高级操作符（每天 2.5 小时）</p>
+</li>
+<li><p>第 7 周：线程模型和 Sinks（每天 2.5 小时）</p>
+</li>
+<li><p>第 8 周：性能优化和最佳实践（每天 2.5 小时）</p>
+</li>
+</ul>
+<h4 id="4-1-4-第四阶段：AI-智能体应用（4-周）"><a href="#4-1-4-第四阶段：AI-智能体应用（4-周）" class="headerlink" title="4.1.4 第四阶段：AI 智能体应用（4 周）"></a>4.1.4 第四阶段：AI 智能体应用（4 周）</h4><p><strong>目标</strong>：在 AI 智能体框架中熟练应用 Reactor</p>
+<p><strong>学习内容</strong>：</p>
+<ol>
+<li><p>AI 智能体架构基础</p>
+</li>
+<li><p>ReAct 模式原理和实现</p>
+</li>
+<li><p>多智能体通信机制</p>
+</li>
+<li><p>实时数据流处理</p>
+</li>
+<li><p>与机器学习框架集成</p>
+</li>
+</ol>
+<p><strong>学习资源</strong>：</p>
+<ul>
+<li><p>阿里 AgentScope Java 框架文档</p>
+</li>
+<li><p>相关 AI 论文和技术报告</p>
+</li>
+<li><p>开源项目示例</p>
+</li>
+</ul>
+<p><strong>每周安排</strong>：</p>
+<ul>
+<li><p>第 9 周：AI 智能体基础架构（每天 3 小时）</p>
+</li>
+<li><p>第 10 周：ReAct 模式实现（每天 3 小时）</p>
+</li>
+<li><p>第 11 周：多智能体系统（每天 3 小时）</p>
+</li>
+<li><p>第 12 周：综合项目实践（每天 3 小时）</p>
+</li>
+</ul>
+<h3 id="4-2-推荐学习资源"><a href="#4-2-推荐学习资源" class="headerlink" title="4.2 推荐学习资源"></a>4.2 推荐学习资源</h3><h4 id="4-2-1-官方文档与教程"><a href="#4-2-1-官方文档与教程" class="headerlink" title="4.2.1 官方文档与教程"></a>4.2.1 官方文档与教程</h4><ol>
+<li><strong>Reactor 官方文档</strong><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/reactor-core-reference-guide-3.8.3.pdf">(1)</a></li>
+</ol>
+<ul>
+<li><p>地址：<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/">https://projectreactor.io</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/">&#x2F;docs</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/">&#x2F;core</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/">&#x2F;3.8</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/">.3&#x2F;ref</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/">erenc</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/">e&#x2F;</a></p>
+</li>
+<li><p>内容：全面的 API 参考、概念解释和示例代码</p>
+</li>
+<li><p>特点：权威、详细、最新版本</p>
+</li>
+</ul>
+<ol>
+<li><strong>Spring 官方教程</strong></li>
+</ol>
+<ul>
+<li><p>地址：<a target="_blank" rel="noopener" href="https://spring.io/guides/gs/reactive-rest-service/">https://spring.io/g</a><a target="_blank" rel="noopener" href="https://spring.io/guides/gs/reactive-rest-service/">uides</a><a target="_blank" rel="noopener" href="https://spring.io/guides/gs/reactive-rest-service/">&#x2F;gs&#x2F;r</a><a target="_blank" rel="noopener" href="https://spring.io/guides/gs/reactive-rest-service/">eacti</a><a target="_blank" rel="noopener" href="https://spring.io/guides/gs/reactive-rest-service/">ve-re</a><a target="_blank" rel="noopener" href="https://spring.io/guides/gs/reactive-rest-service/">st-se</a><a target="_blank" rel="noopener" href="https://spring.io/guides/gs/reactive-rest-service/">rvice</a><a target="_blank" rel="noopener" href="https://spring.io/guides/gs/reactive-rest-service/">&#x2F;</a></p>
+</li>
+<li><p>内容：Spring WebFlux 与 Reactor 结合的实战教程</p>
+</li>
+<li><p>特点：结合 Spring 生态，实用性强</p>
+</li>
+</ul>
+<ol>
+<li><strong>Reactor Core Javadoc</strong></li>
+</ol>
+<ul>
+<li><p>地址：<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/release/api/">https://projectreactor.io/doc</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/release/api/">s&#x2F;cor</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/release/api/">e&#x2F;rel</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/release/api/">ease&#x2F;</a><a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/release/api/">api&#x2F;</a></p>
+</li>
+<li><p>内容：完整的 API 文档</p>
+</li>
+<li><p>特点：适合查阅具体方法</p>
+</li>
+</ul>
+<h4 id="4-2-2-书籍推荐"><a href="#4-2-2-书籍推荐" class="headerlink" title="4.2.2 书籍推荐"></a>4.2.2 书籍推荐</h4><ol>
+<li><strong>《Reactive Programming with Reactor》</strong></li>
+</ol>
+<ul>
+<li><p>作者：Marc de Verdelhan</p>
+</li>
+<li><p>特点：系统介绍 Reactor 的理论和实践</p>
+</li>
+<li><p>适合：中高级学习者</p>
+</li>
+</ul>
+<ol>
+<li><strong>《Java 9 Modularity》</strong>（包含反应式流章节）</li>
+</ol>
+<ul>
+<li><p>作者：Sander Mak, Paul Bakker</p>
+</li>
+<li><p>特点：深入介绍 Java 9 的 Flow API</p>
+</li>
+<li><p>适合：想了解底层原理的学习者</p>
+</li>
+</ul>
+<ol>
+<li><strong>《Reactive Streams in Java》</strong></li>
+</ol>
+<ul>
+<li><p>作者：Adam Davis</p>
+</li>
+<li><p>特点：专门介绍反应式流规范</p>
+</li>
+<li><p>适合：理论基础学习</p>
+</li>
+</ul>
+<h4 id="4-2-3-在线课程与视频"><a href="#4-2-3-在线课程与视频" class="headerlink" title="4.2.3 在线课程与视频"></a>4.2.3 在线课程与视频</h4><ol>
+<li><strong>Pluralsight 课程</strong></li>
+</ol>
+<ul>
+<li><p>“Reactive Programming with Spring Boot 2 and Project Reactor”</p>
+</li>
+<li><p>“Mastering Reactive Programming with Project Reactor”</p>
+</li>
+</ul>
+<ol>
+<li><strong>Spring 官方视频</strong></li>
+</ol>
+<ul>
+<li><p>地址：<a target="_blank" rel="noopener" href="https://spring.io/videos/">https://spring.io</a><a target="_blank" rel="noopener" href="https://spring.io/videos/">&#x2F;vide</a><a target="_blank" rel="noopener" href="https://spring.io/videos/">os&#x2F;</a></p>
+</li>
+<li><p>内容：Spring 相关技术的官方视频教程</p>
+</li>
+</ul>
+<ol>
+<li><strong>Conference Talks</strong></li>
+</ol>
+<ul>
+<li>关注 Spring One、QCon 等会议的反应式编程主题</li>
+</ul>
+<h4 id="4-2-4-实战项目与示例"><a href="#4-2-4-实战项目与示例" class="headerlink" title="4.2.4 实战项目与示例"></a>4.2.4 实战项目与示例</h4><ol>
+<li><strong>官方示例</strong></li>
+</ol>
+<ul>
+<li><p>地址：<a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">https://github.com/r</a><a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">eacto</a><a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">r&#x2F;rea</a><a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">ctor-</a><a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">core&#x2F;</a><a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">tree&#x2F;</a><a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">main&#x2F;</a><a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">examp</a><a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core/tree/main/examples">les</a></p>
+</li>
+<li><p>内容：各种 Reactor 使用示例</p>
+</li>
+</ul>
+<ol>
+<li><strong>Spring PetClinic Reactive</strong></li>
+</ol>
+<ul>
+<li><p>地址：<a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">https://github.co</a><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">m&#x2F;spr</a><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">ing-p</a><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">rojec</a><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">ts&#x2F;sp</a><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">ring-</a><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">petcl</a><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">inic-</a><a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-petclinic-react">react</a></p>
+</li>
+<li><p>内容：使用 Reactor 的反应式宠物诊所应用</p>
+</li>
+</ul>
+<ol>
+<li><strong>AI 智能体相关项目</strong></li>
+</ol>
+<ul>
+<li><p>阿里 AgentScope Java：<a target="_blank" rel="noopener" href="https://github.com/agentscope-ai/agentscope-java">https://github.com/a</a><a target="_blank" rel="noopener" href="https://github.com/agentscope-ai/agentscope-java">gents</a><a target="_blank" rel="noopener" href="https://github.com/agentscope-ai/agentscope-java">cope-</a><a target="_blank" rel="noopener" href="https://github.com/agentscope-ai/agentscope-java">ai&#x2F;ag</a><a target="_blank" rel="noopener" href="https://github.com/agentscope-ai/agentscope-java">entsc</a><a target="_blank" rel="noopener" href="https://github.com/agentscope-ai/agentscope-java">ope-j</a><a target="_blank" rel="noopener" href="https://github.com/agentscope-ai/agentscope-java">ava</a></p>
+</li>
+<li><p>微软 Reactive Agents：<a target="_blank" rel="noopener" href="https://github.com/microsoft/reactive-agents">https://github.com</a><a target="_blank" rel="noopener" href="https://github.com/microsoft/reactive-agents">&#x2F;micr</a><a target="_blank" rel="noopener" href="https://github.com/microsoft/reactive-agents">osoft</a><a target="_blank" rel="noopener" href="https://github.com/microsoft/reactive-agents">&#x2F;reac</a><a target="_blank" rel="noopener" href="https://github.com/microsoft/reactive-agents">tive-</a><a target="_blank" rel="noopener" href="https://github.com/microsoft/reactive-agents">agent</a><a target="_blank" rel="noopener" href="https://github.com/microsoft/reactive-agents">s</a></p>
+</li>
+</ul>
+<h3 id="4-3-实践项目建议"><a href="#4-3-实践项目建议" class="headerlink" title="4.3 实践项目建议"></a>4.3 实践项目建议</h3><h4 id="4-3-1-基础项目：反应式数据处理管道"><a href="#4-3-1-基础项目：反应式数据处理管道" class="headerlink" title="4.3.1 基础项目：反应式数据处理管道"></a>4.3.1 基础项目：反应式数据处理管道</h4><p><strong>项目目标</strong>：通过简单的数据处理任务掌握 Reactor 的基本用法</p>
+<p><strong>项目描述</strong>：</p>
+<p>创建一个模拟的传感器数据处理系统，包含以下功能：</p>
+<ol>
+<li><p>生成模拟的传感器数据流（温度、湿度、压力）</p>
+</li>
+<li><p>对数据进行实时处理和过滤</p>
+</li>
+<li><p>计算统计信息（平均值、最大值、最小值）</p>
+</li>
+<li><p>将处理结果输出到控制台或文件</p>
+</li>
+</ol>
+<p><strong>技术要求</strong>：</p>
+<ul>
+<li><p>使用 Flux 表示传感器数据流</p>
+</li>
+<li><p>使用各种操作符进行数据转换和过滤</p>
+</li>
+<li><p>实现背压处理机制</p>
+</li>
+<li><p>使用 Sinks API 创建热流</p>
+</li>
+</ul>
+<p><strong>预期成果</strong>：</p>
+<ul>
+<li><p>能够处理 1000+ TPS 的数据流</p>
+</li>
+<li><p>支持多种数据处理策略</p>
+</li>
+<li><p>具备基本的监控和统计功能</p>
+</li>
+</ul>
+<h4 id="4-3-2-中级项目：智能聊天机器人"><a href="#4-3-2-中级项目：智能聊天机器人" class="headerlink" title="4.3.2 中级项目：智能聊天机器人"></a>4.3.2 中级项目：智能聊天机器人</h4><p><strong>项目目标</strong>：在对话系统中应用 Reactor，理解请求 - 响应模式</p>
+<p><strong>项目描述</strong>：</p>
+<p>构建一个简单的智能聊天机器人，具备以下功能：</p>
+<ol>
+<li><p>接收用户输入流（Flux）</p>
+</li>
+<li><p>使用 Mono 表示单次对话处理</p>
+</li>
+<li><p>实现简单的对话逻辑（问答、多轮对话）</p>
+</li>
+<li><p>支持自然语言处理（可调用外部 API）</p>
+</li>
+</ol>
+<p><strong>技术要求</strong>：</p>
+<ul>
+<li><p>使用 Reactor 处理异步对话流程</p>
+</li>
+<li><p>实现对话状态管理</p>
+</li>
+<li><p>支持并发处理多个用户</p>
+</li>
+<li><p>集成简单的 NLP 功能</p>
+</li>
+</ul>
+<p><strong>预期成果</strong>：</p>
+<ul>
+<li><p>支持 100 + 并发用户</p>
+</li>
+<li><p>对话响应时间 &lt; 1 秒</p>
+</li>
+<li><p>具备基本的上下文理解能力</p>
+</li>
+</ul>
+<h4 id="4-3-3-高级项目：多智能体协作系统"><a href="#4-3-3-高级项目：多智能体协作系统" class="headerlink" title="4.3.3 高级项目：多智能体协作系统"></a>4.3.3 高级项目：多智能体协作系统</h4><p><strong>项目目标</strong>：在复杂的多智能体系统中熟练运用 Reactor</p>
+<p><strong>项目描述</strong>：</p>
+<p>基于 ReAct 模式构建一个多智能体协作系统，实现以下功能：</p>
+<ol>
+<li><p>任务分配智能体：接收任务请求，分配给合适的工作智能体</p>
+</li>
+<li><p>工作智能体：执行具体任务，可能需要调用外部工具</p>
+</li>
+<li><p>监控智能体：实时监控系统状态，处理异常情况</p>
+</li>
+<li><p>消息中心：支持智能体间的可靠通信</p>
+</li>
+</ol>
+<p><strong>技术要求</strong>：</p>
+<ul>
+<li><p>基于 ReAct 模式实现推理 - 行动循环</p>
+</li>
+<li><p>使用消息中心（MsgHub）实现智能体间通信</p>
+</li>
+<li><p>支持任务优先级和调度</p>
+</li>
+<li><p>实现容错和恢复机制</p>
+</li>
+</ul>
+<p><strong>预期成果</strong>：</p>
+<ul>
+<li><p>支持 10 个以上智能体并发工作</p>
+</li>
+<li><p>任务处理成功率 &gt; 99%</p>
+</li>
+<li><p>具备可扩展性和可维护性</p>
+</li>
+</ul>
+<h4 id="4-3-4-创新项目：AI-驱动的实时决策系统"><a href="#4-3-4-创新项目：AI-驱动的实时决策系统" class="headerlink" title="4.3.4 创新项目：AI 驱动的实时决策系统"></a>4.3.4 创新项目：AI 驱动的实时决策系统</h4><p><strong>项目目标</strong>：将 Reactor 与机器学习框架结合，实现智能决策</p>
+<p><strong>项目描述</strong>：</p>
+<p>构建一个基于强化学习的实时决策系统，应用场景可以是：</p>
+<ol>
+<li><p>智能投资决策系统</p>
+</li>
+<li><p>游戏 AI bot</p>
+</li>
+<li><p>工业生产优化系统</p>
+</li>
+</ol>
+<p><strong>技术要求</strong>：</p>
+<ul>
+<li><p>集成机器学习框架（如 TensorFlow、PyTorch）</p>
+</li>
+<li><p>使用 Reactor 处理实时数据流</p>
+</li>
+<li><p>实现在线学习和模型更新</p>
+</li>
+<li><p>支持 A&#x2F;B 测试和性能评估</p>
+</li>
+</ul>
+<p><strong>预期成果</strong>：</p>
+<ul>
+<li><p>能够在实际环境中部署运行</p>
+</li>
+<li><p>决策准确率达到业务要求</p>
+</li>
+<li><p>具备自适应性和学习能力</p>
+</li>
+</ul>
+<h2 id="五、核心操作符详解与最佳实践"><a href="#五、核心操作符详解与最佳实践" class="headerlink" title="五、核心操作符详解与最佳实践"></a>五、核心操作符详解与最佳实践</h2><h3 id="5-1-基础操作符：创建、转换与过滤"><a href="#5-1-基础操作符：创建、转换与过滤" class="headerlink" title="5.1 基础操作符：创建、转换与过滤"></a>5.1 基础操作符：创建、转换与过滤</h3><h4 id="5-1-1-创建操作符"><a href="#5-1-1-创建操作符" class="headerlink" title="5.1.1 创建操作符"></a>5.1.1 创建操作符</h4><p><strong>Flux 创建方式</strong>：</p>
+<ol>
+<li><strong>just()</strong>：从固定元素创建 Flux</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; flux1 = Flux.just(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;);</span><br><span class="line"></span><br><span class="line">Flux\&lt;Integer&gt; flux2 = Flux.just(1, 2, 3, 4, 5);</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>fromIterable()</strong>：从集合创建 Flux</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List\&lt;String&gt; list = Arrays.asList(&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;);</span><br><span class="line"></span><br><span class="line">Flux\&lt;String&gt; flux = Flux.fromIterable(list);</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>range()</strong>：创建整数序列</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.range(1, 10); // 1到10的整数</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>interval()</strong>：创建定时序列</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Long&gt; flux = Flux.interval(Duration.ofSeconds(1)); // 每秒一个递增数字</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>generate()</strong>：通过回调生成序列</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; flux = Flux.generate(</span><br><span class="line"></span><br><span class="line">&amp;#x20;   () -&gt; 0, // 初始状态</span><br><span class="line"></span><br><span class="line">&amp;#x20;   (state, sink) -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       sink.next(&quot;value-&quot; + state);</span><br><span class="line"></span><br><span class="line">&amp;#x20;       if (state == 9) sink.complete();</span><br><span class="line"></span><br><span class="line">&amp;#x20;       return state + 1;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Mono 创建方式</strong>：</p>
+<ol>
+<li><strong>just()</strong>：创建包含单个元素的 Mono</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Mono\&lt;String&gt; mono = Mono.just(&quot;hello reactor&quot;);</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>empty()</strong>：创建空 Mono</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Mono\&lt;String&gt; mono = Mono.empty();</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>fromCallable()</strong>：从 Supplier 创建 Mono</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Mono\&lt;String&gt; mono = Mono.fromCallable(() -&gt; &quot;computed value&quot;);</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>fromFuture()</strong>：从 CompletableFuture 创建 Mono</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CompletableFuture\&lt;String&gt; future = CompletableFuture.supplyAsync(() -&gt; &quot;async value&quot;);</span><br><span class="line"></span><br><span class="line">Mono\&lt;String&gt; mono = Mono.fromFuture(future);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-1-2-转换操作符"><a href="#5-1-2-转换操作符" class="headerlink" title="5.1.2 转换操作符"></a>5.1.2 转换操作符</h4><p><strong>map()</strong>：一对一同步转换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.just(1, 2, 3)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(x -&gt; x \* 2); // 输出：2, 4, 6</span><br></pre></td></tr></table></figure>
+
+<p><strong>flatMap()</strong>：一对多异步转换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; flux = Flux.just(&quot;a&quot;, &quot;b&quot;)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .flatMap(s -&gt; Flux.just(s.toUpperCase(), s + s)); // 输出：A, aa, B, bb</span><br></pre></td></tr></table></figure>
+
+<p><strong>concatMap()</strong>：保持顺序的 flatMap</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; flux = Flux.just(1, 2, 3)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .concatMap(i -&gt; Flux.just(&quot;item-&quot; + i).delayElements(Duration.ofMillis(100)));</span><br></pre></td></tr></table></figure>
+
+<p><strong>cast()</strong>：类型转换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Object&gt; flux = Flux.just(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;);</span><br><span class="line"></span><br><span class="line">Flux\&lt;Integer&gt; intFlux = flux.cast(Integer.class);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-1-3-过滤操作符"><a href="#5-1-3-过滤操作符" class="headerlink" title="5.1.3 过滤操作符"></a>5.1.3 过滤操作符</h4><p><strong>filter()</strong>：按条件过滤元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .filter(x -&gt; x % 2 == 0); // 只保留偶数</span><br></pre></td></tr></table></figure>
+
+<p><strong>distinct()</strong>：去重</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.just(1, 2, 2, 3, 3, 3)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .distinct(); // 输出：1, 2, 3</span><br></pre></td></tr></table></figure>
+
+<p><strong>take()&#x2F;takeLast()</strong>：取前 N 个或后 N 个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .take(3); // 取前3个元素：1, 2, 3</span><br></pre></td></tr></table></figure>
+
+<p><strong>skip()&#x2F;skipLast()</strong>：跳过前 N 个或后 N 个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .skip(3); // 跳过前3个元素：4, 5, 6, 7, 8, 9, 10</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-高级操作符：组合、聚合与窗口"><a href="#5-2-高级操作符：组合、聚合与窗口" class="headerlink" title="5.2 高级操作符：组合、聚合与窗口"></a>5.2 高级操作符：组合、聚合与窗口</h3><h4 id="5-2-1-组合操作符"><a href="#5-2-1-组合操作符" class="headerlink" title="5.2.1 组合操作符"></a>5.2.1 组合操作符</h4><p><strong>zip()</strong>：按位置配对合并</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; letters = Flux.just(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;);</span><br><span class="line"></span><br><span class="line">Flux\&lt;Integer&gt; numbers = Flux.just(1, 2, 3);</span><br><span class="line"></span><br><span class="line">Flux\&lt;Tuple2\&lt;String, Integer&gt;&gt; flux = Flux.zip(letters, numbers);</span><br><span class="line"></span><br><span class="line">// 输出：(A,1), (B,2), (C,3)</span><br></pre></td></tr></table></figure>
+
+<p><strong>combineLatest()</strong>：合并最新元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux1 = Flux.interval(Duration.ofSeconds(1)).take(3);</span><br><span class="line"></span><br><span class="line">Flux\&lt;Integer&gt; flux2 = Flux.interval(Duration.ofSeconds(2)).take(3);</span><br><span class="line"></span><br><span class="line">Flux\&lt;Tuple2\&lt;Integer, Integer&gt;&gt; flux = Flux.combineLatest(flux1, flux2);</span><br><span class="line"></span><br><span class="line">// 输出：(0,0), (1,0), (1,1), (2,1), (2,2)</span><br></pre></td></tr></table></figure>
+
+<p><strong>merge()</strong>：合并多个流</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; flux1 = Flux.just(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;);</span><br><span class="line"></span><br><span class="line">Flux\&lt;String&gt; flux2 = Flux.just(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;);</span><br><span class="line"></span><br><span class="line">Flux\&lt;String&gt; merged = Flux.merge(flux1, flux2);</span><br><span class="line"></span><br><span class="line">// 可能的输出：a, 1, b, 2, c, 3（顺序不确定）</span><br></pre></td></tr></table></figure>
+
+<p><strong>concat()</strong>：按顺序连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; flux = Flux.concat(flux1, flux2);</span><br><span class="line"></span><br><span class="line">// 输出：a, b, c, 1, 2, 3（保持顺序）</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-2-聚合操作符"><a href="#5-2-2-聚合操作符" class="headerlink" title="5.2.2 聚合操作符"></a>5.2.2 聚合操作符</h4><p><strong>reduce()</strong>：累积计算</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mono\&lt;Integer&gt; mono = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .reduce((acc, x) -&gt; acc + x); // 计算1到10的和</span><br></pre></td></tr></table></figure>
+
+<p><strong>collectList()</strong>：收集所有元素到 List</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mono\&lt;List\&lt;Integer&gt;&gt; mono = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .collectList();</span><br></pre></td></tr></table></figure>
+
+<p><strong>count()</strong>：计算元素个数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mono\&lt;Long&gt; mono = Flux.just(1, 2, 3, 4, 5)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .count(); // 输出：5</span><br></pre></td></tr></table></figure>
+
+<p><strong>max()&#x2F;min()</strong>：求最大值 &#x2F; 最小值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mono\&lt;Integer&gt; mono = Flux.just(3, 1, 4, 1, 5)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .max(); // 输出：5</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-3-窗口操作符"><a href="#5-2-3-窗口操作符" class="headerlink" title="5.2.3 窗口操作符"></a>5.2.3 窗口操作符</h4><p><strong>window()</strong>：创建窗口流</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Flux\&lt;Integer&gt;&gt; windowFlux = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .window(3); // 每3个元素一个窗口</span><br></pre></td></tr></table></figure>
+
+<p><strong>buffer()</strong>：创建缓冲区</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;List\&lt;Integer&gt;&gt; bufferFlux = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .buffer(3); // 每3个元素一个列表</span><br></pre></td></tr></table></figure>
+
+<p><strong>groupBy()</strong>：按条件分组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;GroupedFlux\&lt;String, Integer&gt;&gt; groupedFlux = Flux.just(1, 2, 3, 4, 5)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .groupBy(x -&gt; x % 2 == 0 ? &quot;even&quot; : &quot;odd&quot;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-线程调度与并发模型"><a href="#5-3-线程调度与并发模型" class="headerlink" title="5.3 线程调度与并发模型"></a>5.3 线程调度与并发模型</h3><h4 id="5-3-1-线程调度基础"><a href="#5-3-1-线程调度基础" class="headerlink" title="5.3.1 线程调度基础"></a>5.3.1 线程调度基础</h4><p>Reactor 的线程模型基于<strong>Scheduler</strong>抽象，提供了多种调度策略：</p>
+<ol>
+<li><p><strong>Schedulers.immediate()</strong>：当前线程直接执行</p>
+</li>
+<li><p><strong>Schedulers.single()</strong>：单线程顺序执行</p>
+</li>
+<li><p><strong>Schedulers.elastic()</strong>：弹性线程池（默认）</p>
+</li>
+<li><p><strong>Schedulers.parallel()</strong>：并行线程池（CPU 核心数）</p>
+</li>
+<li><p><strong>Schedulers.boundedElastic()</strong>：有界弹性线程池</p>
+</li>
+</ol>
+<h4 id="5-3-2-subscribeOn-vs-publishOn"><a href="#5-3-2-subscribeOn-vs-publishOn" class="headerlink" title="5.3.2 subscribeOn vs publishOn"></a>5.3.2 subscribeOn vs publishOn</h4><p><strong>subscribeOn()</strong>：改变订阅过程的执行线程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .subscribeOn(Schedulers.parallel()); // 整个流在并行线程池执行</span><br></pre></td></tr></table></figure>
+
+<p><strong>publishOn()</strong>：改变后续操作的执行线程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.range(1, 10)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .publishOn(Schedulers.elastic()) // 后续操作在弹性线程池</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(x -&gt; x \* 2);</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键区别</strong>：</p>
+<ul>
+<li><p>subscribeOn ()：影响整个流的订阅过程，通常只在数据源附近使用一次</p>
+</li>
+<li><p>publishOn ()：可以多次使用，每次都会切换后续操作的线程</p>
+</li>
+</ul>
+<h4 id="5-3-3-并发处理策略"><a href="#5-3-3-并发处理策略" class="headerlink" title="5.3.3 并发处理策略"></a>5.3.3 并发处理策略</h4><ol>
+<li><strong>并行处理</strong>：使用 parallel () 操作符</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ParallelFlux\&lt;Integer&gt; parallelFlux = Flux.range(1, 1000)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .parallel(4); // 使用4个并行线程</span><br><span class="line"></span><br><span class="line">Flux\&lt;Integer&gt; result = parallelFlux</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .runOn(Schedulers.parallel())</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(x -&gt; x \* 2)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .sequential(); // 合并结果</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>异步边界处理</strong>：在阻塞操作前后切换线程</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; flux = Flux.just(&quot;file1.txt&quot;, &quot;file2.txt&quot;, &quot;file3.txt&quot;)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .publishOn(Schedulers.boundedElastic()) // 切换到IO线程</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(this::readFile) // 阻塞文件读取</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .publishOn(Schedulers.parallel()) // 切换回计算线程</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(this::processData); // 非阻塞处理</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-错误处理与恢复策略"><a href="#5-4-错误处理与恢复策略" class="headerlink" title="5.4 错误处理与恢复策略"></a>5.4 错误处理与恢复策略</h3><h4 id="5-4-1-基本错误处理"><a href="#5-4-1-基本错误处理" class="headerlink" title="5.4.1 基本错误处理"></a>5.4.1 基本错误处理</h4><p><strong>onErrorReturn()</strong>：错误时返回默认值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.just(1, 2, 0, 3)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(x -&gt; 10 / x)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .onErrorReturn(-1); // 除零错误时返回-1</span><br></pre></td></tr></table></figure>
+
+<p><strong>onErrorResume()</strong>：错误时提供备用流</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.just(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(x -&gt; Integer.parseInt(x))</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .onErrorResume(e -&gt; Flux.just(0)); // 转换失败时返回0</span><br></pre></td></tr></table></figure>
+
+<p><strong>onErrorMap()</strong>：错误类型转换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.just(&quot;1&quot;, &quot;a&quot;, &quot;2&quot;)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(x -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       try &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           return Integer.parseInt(x);</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125; catch (NumberFormatException e) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;           throw new MyCustomException(&quot;Invalid number: &quot; + x, e);</span><br><span class="line"></span><br><span class="line">&amp;#x20;       &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-4-2-高级恢复策略"><a href="#5-4-2-高级恢复策略" class="headerlink" title="5.4.2 高级恢复策略"></a>5.4.2 高级恢复策略</h4><p><strong>retry()</strong>：重试机制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = remoteServiceCall()</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .retry(3); // 最多重试3次</span><br></pre></td></tr></table></figure>
+
+<p><strong>retryWhen()</strong>：带条件的重试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = remoteServiceCall()</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))</span><br><span class="line"></span><br><span class="line">&amp;#x20;       .filter(e -&gt; e instanceof TransientException)); // 只重试临时错误</span><br></pre></td></tr></table></figure>
+
+<p><strong>doOnError()</strong>：错误日志记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.just(1, 2, 0, 3)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .map(x -&gt; 10 / x)</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .doOnError(e -&gt; log.error(&quot;Division error: &#123;&#125;&quot;, e.getMessage()))</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .onErrorReturn(-1);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-4-3-背压处理策略"><a href="#5-4-3-背压处理策略" class="headerlink" title="5.4.3 背压处理策略"></a>5.4.3 背压处理策略</h4><p>Reactor 提供了多种背压策略：</p>
+<ol>
+<li><strong>BUFFER</strong>：使用缓冲区存储未处理的数据</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.create(sink -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   for (int i = 0; i &lt; 1000; i++) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       sink.next(i);</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   sink.complete();</span><br><span class="line"></span><br><span class="line">&#125;, FluxSink.OverflowStrategy.BUFFER);</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>DROP</strong>：丢弃无法处理的数据</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.interval(Duration.ofMillis(1))</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .onBackpressureDrop();</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>LATEST</strong>：只保留最新数据</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.interval(Duration.ofMillis(1))</span><br><span class="line"></span><br><span class="line">&amp;#x20;   .onBackpressureLatest();</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li><strong>ERROR</strong>：背压超限时抛出异常</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;Integer&gt; flux = Flux.create(sink -&gt; &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   for (int i = 0; i &lt; 1000; i++) &#123;</span><br><span class="line"></span><br><span class="line">&amp;#x20;       sink.next(i);</span><br><span class="line"></span><br><span class="line">&amp;#x20;   &#125;</span><br><span class="line"></span><br><span class="line">&amp;#x20;   sink.complete();</span><br><span class="line"></span><br><span class="line">&#125;, FluxSink.OverflowStrategy.ERROR);</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-5-Sinks-API-与热流管理"><a href="#5-5-Sinks-API-与热流管理" class="headerlink" title="5.5 Sinks API 与热流管理"></a>5.5 Sinks API 与热流管理</h3><h4 id="5-5-1-Sinks-API-概述"><a href="#5-5-1-Sinks-API-概述" class="headerlink" title="5.5.1 Sinks API 概述"></a>5.5.1 Sinks API 概述</h4><p>Sinks 是 Reactor 3.4 引入的新 API，用于<strong>编程式创建响应式流</strong>，解决了传统 Processor 类的线程安全问题<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45515182/article/details/156280564">(130)</a>。</p>
+<p>主要类型：</p>
+<ol>
+<li><p><strong>Sinks.one</strong><strong>()</strong>：单值发射器（对应 Mono）</p>
+</li>
+<li><p><strong>Sinks.many()</strong>：多值发射器（对应 Flux）</p>
+</li>
+</ol>
+<h4 id="5-5-2-创建热流"><a href="#5-5-2-创建热流" class="headerlink" title="5.5.2 创建热流"></a>5.5.2 创建热流</h4><p><strong>使用 Sinks 创建热流示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 创建一个热流，所有订阅者共享相同的数据</span><br><span class="line"></span><br><span class="line">Sinks.Many\&lt;String&gt; sink = Sinks.many().multicast().onBackpressureBuffer();</span><br><span class="line"></span><br><span class="line">Flux\&lt;String&gt; hotFlux = sink.asFlux();</span><br><span class="line"></span><br><span class="line">// 多个订阅者</span><br><span class="line"></span><br><span class="line">hotFlux.subscribe(data -&gt; System.out.println(&quot;Subscriber 1: &quot; + data));</span><br><span class="line"></span><br><span class="line">hotFlux.subscribe(data -&gt; System.out.println(&quot;Subscriber 2: &quot; + data));</span><br><span class="line"></span><br><span class="line">// 发射数据</span><br><span class="line"></span><br><span class="line">sink.tryEmitNext(&quot;Hello&quot;);</span><br><span class="line"></span><br><span class="line">sink.tryEmitNext(&quot;World&quot;);</span><br><span class="line"></span><br><span class="line">// 输出：</span><br><span class="line"></span><br><span class="line">// Subscriber 1: Hello</span><br><span class="line"></span><br><span class="line">// Subscriber 2: Hello</span><br><span class="line"></span><br><span class="line">// Subscriber 1: World</span><br><span class="line"></span><br><span class="line">// Subscriber 2: World</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-5-3-冷流转热流"><a href="#5-5-3-冷流转热流" class="headerlink" title="5.5.3 冷流转热流"></a>5.5.3 冷流转热流</h4><p>使用 **share ()<strong>或</strong>publish ()** 操作符可以将冷流转为热流：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Flux\&lt;String&gt; coldFlux = Flux.just(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;);</span><br><span class="line"></span><br><span class="line">Flux\&lt;String&gt; hotFlux = coldFlux.share(); // 共享订阅</span><br><span class="line"></span><br><span class="line">// 订阅时不会重新执行coldFlux的数据源</span><br><span class="line"></span><br><span class="line">hotFlux.subscribe();</span><br><span class="line"></span><br><span class="line">hotFlux.subscribe();</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-6-性能优化最佳实践"><a href="#5-6-性能优化最佳实践" class="headerlink" title="5.6 性能优化最佳实践"></a>5.6 性能优化最佳实践</h3><h4 id="5-6-1-操作符优化"><a href="#5-6-1-操作符优化" class="headerlink" title="5.6.1 操作符优化"></a>5.6.1 操作符优化</h4><ol>
+<li><p><strong>避免不必要的操作符</strong>：减少操作符链的长度</p>
+</li>
+<li><p><strong>使用合适的操作符</strong>：map vs flatMap，根据需求选择</p>
+</li>
+<li><p><strong>批处理优化</strong>：使用 buffer () 或 window () 进行批处理</p>
+</li>
+<li><p><strong>缓存策略</strong>：对重复使用的流使用 cache () 或 replay ()</p>
+</li>
+</ol>
+<h4 id="5-6-2-线程模型优化"><a href="#5-6-2-线程模型优化" class="headerlink" title="5.6.2 线程模型优化"></a>5.6.2 线程模型优化</h4><ol>
+<li><strong>线程池配置</strong>：</li>
+</ol>
+<ul>
+<li><p>计算密集型：使用 Schedulers.parallel ()，线程数 &#x3D; CPU 核心数</p>
+</li>
+<li><p>IO 密集型：使用 Schedulers.boundedElastic ()，设置合理的最大线程数</p>
+</li>
+<li><p>定时任务：使用 Schedulers.single () 避免线程竞争</p>
+</li>
+</ul>
+<ol>
+<li><strong>减少线程切换</strong>：</li>
+</ol>
+<ul>
+<li><p>在数据源附近使用 subscribeOn ()</p>
+</li>
+<li><p>合理使用 publishOn ()，避免不必要的线程切换</p>
+</li>
+<li><p>使用 runOn () 为并行流指定线程池</p>
+</li>
+</ul>
+<h4 id="5-6-3-内存管理"><a href="#5-6-3-内存管理" class="headerlink" title="5.6.3 内存管理"></a>5.6.3 内存管理</h4><ol>
+<li><strong>背压策略选择</strong>：</li>
+</ol>
+<ul>
+<li><p>关键数据：使用 BUFFER 策略</p>
+</li>
+<li><p>实时数据：使用 LATEST 策略</p>
+</li>
+<li><p>可丢弃数据：使用 DROP 策略</p>
+</li>
+</ul>
+<ol>
+<li><p><strong>对象池</strong>：对于频繁创建的对象，使用对象池技术</p>
+</li>
+<li><p><strong>引用管理</strong>：及时释放不再使用的资源</p>
+</li>
+</ol>
+<h4 id="5-6-4-监控与调优"><a href="#5-6-4-监控与调优" class="headerlink" title="5.6.4 监控与调优"></a>5.6.4 监控与调优</h4><ol>
+<li><strong>关键指标监控</strong>：</li>
+</ol>
+<ul>
+<li><p>吞吐量（TPS）</p>
+</li>
+<li><p>延迟（Latency）</p>
+</li>
+<li><p>错误率</p>
+</li>
+<li><p>线程池状态</p>
+</li>
+<li><p>内存使用情况</p>
+</li>
+</ul>
+<ol>
+<li><strong>性能调优工具</strong>：</li>
+</ol>
+<ul>
+<li><p>使用 StepVerifier 进行单元测试</p>
+</li>
+<li><p>使用 HdrHistogram 进行延迟分析</p>
+</li>
+<li><p>使用 Micrometer 进行指标收集</p>
+</li>
+<li><p>使用 VisualVM 进行性能分析</p>
+</li>
+</ul>
+<h2 id="六、常见问题与解决方案"><a href="#六、常见问题与解决方案" class="headerlink" title="六、常见问题与解决方案"></a>六、常见问题与解决方案</h2><h3 id="6-1-学习曲线与理解难点"><a href="#6-1-学习曲线与理解难点" class="headerlink" title="6.1 学习曲线与理解难点"></a>6.1 学习曲线与理解难点</h3><h4 id="6-1-1-从命令式到反应式思维转换"><a href="#6-1-1-从命令式到反应式思维转换" class="headerlink" title="6.1.1 从命令式到反应式思维转换"></a>6.1.1 从命令式到反应式思维转换</h4><p><strong>常见问题</strong>：</p>
+<p>许多开发者在学习 Reactor 时遇到的最大困难是思维模式的转换。从传统的命令式编程（一步一步执行）转向声明式的数据流处理需要时间适应。</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>渐进式学习</strong>：从简单的例子开始，逐步增加复杂度</p>
+</li>
+<li><p><strong>可视化工具</strong>：使用 marble diagrams 理解数据流</p>
+</li>
+<li><p><strong>对比练习</strong>：将同一个问题分别用命令式和反应式实现，对比差异</p>
+</li>
+<li><p><strong>实践项目</strong>：通过实际项目强制使用反应式思维</p>
+</li>
+</ol>
+<h4 id="6-1-2-操作符选择困难"><a href="#6-1-2-操作符选择困难" class="headerlink" title="6.1.2 操作符选择困难"></a>6.1.2 操作符选择困难</h4><p><strong>常见问题</strong>：</p>
+<p>Reactor 提供了大量操作符（超过 150 个），选择合适的操作符完成特定任务是一个挑战。</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>分类学习</strong>：将操作符按功能分类（创建、转换、过滤、组合等）</p>
+</li>
+<li><p><strong>使用场景记忆</strong>：记住每个操作符的典型使用场景</p>
+</li>
+<li><p><strong>API 文档</strong>：经常查阅官方文档和 Javadoc</p>
+</li>
+<li><p><strong>练习总结</strong>：通过练习总结操作符的使用规律</p>
+</li>
+</ol>
+<h4 id="6-1-3-线程模型理解困难"><a href="#6-1-3-线程模型理解困难" class="headerlink" title="6.1.3 线程模型理解困难"></a>6.1.3 线程模型理解困难</h4><p><strong>常见问题</strong>：</p>
+<p>subscribeOn () 和 publishOn () 的区别，以及如何正确使用 Scheduler 是学习中的难点。</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>理解执行顺序</strong>：订阅时从下往上建立订阅链</p>
+</li>
+<li><p><strong>记住原则</strong>：subscribeOn () 只在数据源附近使用一次，publishOn () 可多次使用</p>
+</li>
+<li><p><strong>实践验证</strong>：通过打印线程名验证线程模型</p>
+</li>
+<li><p><strong>参考示例</strong>：学习优秀的开源项目中的线程使用方式</p>
+</li>
+</ol>
+<h3 id="6-2-开发实践中的常见陷阱"><a href="#6-2-开发实践中的常见陷阱" class="headerlink" title="6.2 开发实践中的常见陷阱"></a>6.2 开发实践中的常见陷阱</h3><h4 id="6-2-1-阻塞操作导致性能问题"><a href="#6-2-1-阻塞操作导致性能问题" class="headerlink" title="6.2.1 阻塞操作导致性能问题"></a>6.2.1 阻塞操作导致性能问题</h4><p><strong>问题描述</strong>：</p>
+<p>在反应式代码中意外使用了阻塞操作（如 Thread.sleep ()、同步 I&#x2F;O），导致线程池被占用，系统性能下降。</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>使用异步版本</strong>：优先使用异步 API（如 R2DBC 而非 JDBC）</p>
+</li>
+<li><p><strong>线程隔离</strong>：在阻塞操作前后使用 publishOn () 切换到专用线程池</p>
+</li>
+<li><p><strong>替代方案</strong>：使用 delayElements () 替代 Thread.sleep ()</p>
+</li>
+<li><p><strong>监控工具</strong>：使用 BlockHound 检测阻塞操作</p>
+</li>
+</ol>
+<h4 id="6-2-2-背压处理不当导致内存溢出"><a href="#6-2-2-背压处理不当导致内存溢出" class="headerlink" title="6.2.2 背压处理不当导致内存溢出"></a>6.2.2 背压处理不当导致内存溢出</h4><p><strong>问题描述</strong>：</p>
+<p>当上游产生数据过快而下游处理过慢时，未正确处理背压会导致内存溢出。</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>明确背压策略</strong>：根据业务需求选择合适的背压策略（BUFFER&#x2F;DROP&#x2F;LATEST&#x2F;ERROR）</p>
+</li>
+<li><p><strong>使用 limitRate ()</strong>：对高速数据流使用 limitRate () 进行限流</p>
+</li>
+<li><p><strong>监控背压</strong>：使用 doOnRequest () 监控请求量</p>
+</li>
+<li><p><strong>合理配置</strong>：根据系统资源配置缓冲区大小</p>
+</li>
+</ol>
+<h4 id="6-2-3-错误处理不完整导致程序崩溃"><a href="#6-2-3-错误处理不完整导致程序崩溃" class="headerlink" title="6.2.3 错误处理不完整导致程序崩溃"></a>6.2.3 错误处理不完整导致程序崩溃</h4><p><strong>问题描述</strong>：</p>
+<p>未正确处理所有可能的异常，导致流终止或程序崩溃。</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>全面的错误处理</strong>：在每个可能出错的操作后添加错误处理</p>
+</li>
+<li><p><strong>错误分类</strong>：区分可恢复错误和不可恢复错误</p>
+</li>
+<li><p><strong>重试策略</strong>：对临时错误使用 retry () 或 retryWhen ()</p>
+</li>
+<li><p><strong>兜底策略</strong>：使用 onErrorReturn () 或 onErrorResume () 提供默认值</p>
+</li>
+</ol>
+<h4 id="6-2-4-冷流与热流混淆导致逻辑错误"><a href="#6-2-4-冷流与热流混淆导致逻辑错误" class="headerlink" title="6.2.4 冷流与热流混淆导致逻辑错误"></a>6.2.4 冷流与热流混淆导致逻辑错误</h4><p><strong>问题描述</strong>：</p>
+<p>错误地将冷流当作热流使用，导致每个订阅者都触发重复的操作（如多次调用数据库或 API）。</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>理解概念</strong>：明确冷流（每个订阅者重新执行）和热流（共享执行）的区别</p>
+</li>
+<li><p><strong>正确使用操作符</strong>：使用 share ()、publish () 或 replay () 将冷流转为热流</p>
+</li>
+<li><p><strong>数据源控制</strong>：对昂贵的操作（如数据库查询）使用 cache ()</p>
+</li>
+<li><p><strong>日志验证</strong>：通过日志验证流的执行次数</p>
+</li>
+</ol>
+<h3 id="6-3-性能调优与监控建议"><a href="#6-3-性能调优与监控建议" class="headerlink" title="6.3 性能调优与监控建议"></a>6.3 性能调优与监控建议</h3><h4 id="6-3-1-性能瓶颈分析"><a href="#6-3-1-性能瓶颈分析" class="headerlink" title="6.3.1 性能瓶颈分析"></a>6.3.1 性能瓶颈分析</h4><p><strong>分析方法</strong>：</p>
+<ol>
+<li><strong>指标监控</strong>：</li>
+</ol>
+<ul>
+<li><p>使用 Micrometer 收集关键指标</p>
+</li>
+<li><p>监控线程池使用情况</p>
+</li>
+<li><p>跟踪操作符执行时间</p>
+</li>
+</ul>
+<ol>
+<li><strong>延迟分析</strong>：</li>
+</ol>
+<ul>
+<li><p>使用 HdrHistogram 记录延迟分布</p>
+</li>
+<li><p>找出延迟高的操作符</p>
+</li>
+<li><p>分析是否存在阻塞操作</p>
+</li>
+</ul>
+<ol>
+<li><strong>内存分析</strong>：</li>
+</ol>
+<ul>
+<li><p>使用内存分析工具（如 Eclipse Memory Analyzer）</p>
+</li>
+<li><p>检查是否有内存泄漏</p>
+</li>
+<li><p>分析对象创建和销毁模式</p>
+</li>
+</ul>
+<h4 id="6-3-2-优化策略总结"><a href="#6-3-2-优化策略总结" class="headerlink" title="6.3.2 优化策略总结"></a>6.3.2 优化策略总结</h4><ol>
+<li><strong>操作符优化</strong>：</li>
+</ol>
+<ul>
+<li><p>减少操作符链长度</p>
+</li>
+<li><p>使用批处理操作符（buffer、window）</p>
+</li>
+<li><p>避免不必要的中间操作</p>
+</li>
+</ul>
+<ol>
+<li><strong>线程优化</strong>：</li>
+</ol>
+<ul>
+<li><p>合理配置线程池大小</p>
+</li>
+<li><p>减少线程切换次数</p>
+</li>
+<li><p>使用合适的 Scheduler 实现</p>
+</li>
+</ul>
+<ol>
+<li><strong>数据结构优化</strong>：</li>
+</ol>
+<ul>
+<li><p>使用更高效的数据结构</p>
+</li>
+<li><p>减少对象创建</p>
+</li>
+<li><p>使用对象池技术</p>
+</li>
+</ul>
+<ol>
+<li><strong>算法优化</strong>：</li>
+</ol>
+<ul>
+<li><p>选择更高效的算法</p>
+</li>
+<li><p>利用并行处理</p>
+</li>
+<li><p>实现懒加载</p>
+</li>
+</ul>
+<h4 id="6-3-3-监控体系建设"><a href="#6-3-3-监控体系建设" class="headerlink" title="6.3.3 监控体系建设"></a>6.3.3 监控体系建设</h4><p><strong>推荐监控指标</strong>：</p>
+<ol>
+<li><strong>流处理指标</strong>：</li>
+</ol>
+<ul>
+<li><p>元素处理速率（elements per second）</p>
+</li>
+<li><p>流的完成率</p>
+</li>
+<li><p>错误率</p>
+</li>
+<li><p>背压事件计数</p>
+</li>
+</ul>
+<ol>
+<li><strong>线程池指标</strong>：</li>
+</ol>
+<ul>
+<li><p>活跃线程数</p>
+</li>
+<li><p>队列大小</p>
+</li>
+<li><p>线程池利用率</p>
+</li>
+<li><p>任务等待时间</p>
+</li>
+</ul>
+<ol>
+<li><strong>内存指标</strong>：</li>
+</ol>
+<ul>
+<li><p>堆内存使用量</p>
+</li>
+<li><p>非堆内存使用量</p>
+</li>
+<li><p>对象分配速率</p>
+</li>
+<li><p>垃圾回收频率</p>
+</li>
+</ul>
+<ol>
+<li><strong>自定义业务指标</strong>：</li>
+</ol>
+<ul>
+<li><p>根据业务需求定义的特定指标</p>
+</li>
+<li><p>如：订单处理时间、用户响应时间等</p>
+</li>
+</ul>
+<p><strong>监控工具推荐</strong>：</p>
+<ul>
+<li><p><strong>Micrometer</strong>：与 Spring Boot 集成良好的指标收集库</p>
+</li>
+<li><p><strong>Prometheus</strong>：时间序列数据库，用于存储指标数据</p>
+</li>
+<li><p><strong>Grafana</strong>：数据可视化工具，用于展示监控图表</p>
+</li>
+<li><p><strong>Spring Boot Admin</strong>：应用监控和管理工具</p>
+</li>
+</ul>
+<h3 id="6-4-与-AI-框架集成的特殊考虑"><a href="#6-4-与-AI-框架集成的特殊考虑" class="headerlink" title="6.4 与 AI 框架集成的特殊考虑"></a>6.4 与 AI 框架集成的特殊考虑</h3><h4 id="6-4-1-与机器学习框架的兼容性"><a href="#6-4-1-与机器学习框架的兼容性" class="headerlink" title="6.4.1 与机器学习框架的兼容性"></a>6.4.1 与机器学习框架的兼容性</h4><p><strong>常见问题</strong>：</p>
+<p>机器学习框架（如 TensorFlow、PyTorch）通常是同步的，如何与 Reactor 的异步模型集成？</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>异步包装器</strong>：将机器学习模型包装在 CompletableFuture 或 Mono 中</p>
+</li>
+<li><p><strong>线程池隔离</strong>：使用专用线程池执行机器学习推理</p>
+</li>
+<li><p><strong>批处理策略</strong>：对多个请求进行批处理，提高推理效率</p>
+</li>
+<li><p><strong>模型预热</strong>：启动时加载模型，避免首次请求的延迟</p>
+</li>
+</ol>
+<h4 id="6-4-2-智能体状态管理"><a href="#6-4-2-智能体状态管理" class="headerlink" title="6.4.2 智能体状态管理"></a>6.4.2 智能体状态管理</h4><p><strong>问题描述</strong>：</p>
+<p>在多智能体系统中，如何管理智能体的状态并保证线程安全？</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>不可变状态</strong>：使用不可变对象表示智能体状态</p>
+</li>
+<li><p><strong>Actor 模型</strong>：借鉴 Akka 的 Actor 模型，每个智能体拥有独立的状态</p>
+</li>
+<li><p><strong>线程局部存储</strong>：使用 Reactor 的 Context 传递上下文信息</p>
+</li>
+<li><p><strong>状态快照</strong>：定期保存状态快照，支持故障恢复</p>
+</li>
+</ol>
+<h4 id="6-4-3-实时性要求"><a href="#6-4-3-实时性要求" class="headerlink" title="6.4.3 实时性要求"></a>6.4.3 实时性要求</h4><p><strong>问题描述</strong>：</p>
+<p>某些 AI 应用（如自动驾驶、机器人控制）对实时性要求很高，如何保证响应时间？</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li><p><strong>优先级调度</strong>：为关键任务分配更高的线程优先级</p>
+</li>
+<li><p><strong>资源预留</strong>：为关键智能体预留计算资源</p>
+</li>
+<li><p><strong>降级策略</strong>：在资源紧张时提供降级服务</p>
+</li>
+<li><p><strong>预测算法</strong>：使用预测算法减少计算量</p>
+</li>
+</ol>
+<h4 id="6-4-4-可扩展性设计"><a href="#6-4-4-可扩展性设计" class="headerlink" title="6.4.4 可扩展性设计"></a>6.4.4 可扩展性设计</h4><p><strong>设计原则</strong>：</p>
+<ol>
+<li><p><strong>模块化架构</strong>：智能体之间松耦合，便于独立扩展</p>
+</li>
+<li><p><strong>插件化设计</strong>：支持动态加载新的智能体类型</p>
+</li>
+<li><p><strong>水平扩展</strong>：通过增加节点实现横向扩展</p>
+</li>
+<li><p><strong>负载均衡</strong>：使用消息队列实现智能体间的负载均衡</p>
+</li>
+</ol>
+<h2 id="七、总结与展望"><a href="#七、总结与展望" class="headerlink" title="七、总结与展望"></a>七、总结与展望</h2><h3 id="7-1-学习成果总结"><a href="#7-1-学习成果总结" class="headerlink" title="7.1 学习成果总结"></a>7.1 学习成果总结</h3><p>通过 12 周的系统学习，你应该能够：</p>
+<ol>
+<li><strong>理论理解</strong>：</li>
+</ol>
+<ul>
+<li><p>深入理解反应式编程的核心概念</p>
+</li>
+<li><p>掌握 Flux 和 Mono 的设计哲学和使用场景</p>
+</li>
+<li><p>理解 Reactor 的架构设计和实现原理</p>
+</li>
+</ul>
+<ol>
+<li><strong>技术掌握</strong>：</li>
+</ol>
+<ul>
+<li><p>熟练使用 Flux 和 Mono 的各种创建方式</p>
+</li>
+<li><p>掌握 100 + 个核心操作符的使用方法</p>
+</li>
+<li><p>能够灵活运用线程调度和并发模型</p>
+</li>
+<li><p>掌握完善的错误处理和恢复策略</p>
+</li>
+<li><p>理解并应用背压机制</p>
+</li>
+<li><p>熟练使用 Sinks API 创建热流</p>
+</li>
+</ul>
+<ol>
+<li><strong>实践能力</strong>：</li>
+</ol>
+<ul>
+<li><p>能够在 AI 智能体框架中熟练应用 Reactor</p>
+</li>
+<li><p>掌握与机器学习框架的集成方法</p>
+</li>
+<li><p>具备性能优化和监控能力</p>
+</li>
+<li><p>能够设计和实现可扩展的多智能体系统</p>
+</li>
+</ul>
+<ol>
+<li><strong>项目经验</strong>：</li>
+</ol>
+<ul>
+<li><p>完成 4 个渐进式实践项目</p>
+</li>
+<li><p>掌握从简单数据处理到复杂多智能体系统的开发</p>
+</li>
+<li><p>具备处理实际生产环境问题的能力</p>
+</li>
+</ul>
+<h3 id="7-2-未来发展方向"><a href="#7-2-未来发展方向" class="headerlink" title="7.2 未来发展方向"></a>7.2 未来发展方向</h3><h4 id="7-2-1-技术发展趋势"><a href="#7-2-1-技术发展趋势" class="headerlink" title="7.2.1 技术发展趋势"></a>7.2.1 技术发展趋势</h4><ol>
+<li><p><strong>云原生集成</strong>：Reactor 与 Kubernetes、Istio 等云原生技术的深度集成</p>
+</li>
+<li><p><strong>Serverless 支持</strong>：在无服务器环境中更好地支持反应式编程</p>
+</li>
+<li><p><strong>AI&#x2F;ML 融合</strong>：与深度学习框架的无缝集成，支持实时推理</p>
+</li>
+<li><p><strong>性能优化</strong>：通过 JVM 优化、向量化等技术提升性能</p>
+</li>
+<li><p><strong>多语言支持</strong>：与其他语言（如 Kotlin、Scala）的更好互操作性</p>
+</li>
+</ol>
+<h4 id="7-2-2-职业发展建议"><a href="#7-2-2-职业发展建议" class="headerlink" title="7.2.2 职业发展建议"></a>7.2.2 职业发展建议</h4><ol>
+<li><strong>技术深耕</strong>：</li>
+</ol>
+<ul>
+<li><p>深入理解 Reactive Streams 规范</p>
+</li>
+<li><p>学习其他反应式库（如 RxJava、Akka Streams）</p>
+</li>
+<li><p>掌握函数式编程理论</p>
+</li>
+</ul>
+<ol>
+<li><strong>领域拓展</strong>：</li>
+</ol>
+<ul>
+<li><p>大数据处理：结合 Reactor 和 Spark、Flink</p>
+</li>
+<li><p>物联网：实时处理传感器数据流</p>
+</li>
+<li><p>金融科技：高频交易和风险控制</p>
+</li>
+<li><p>游戏开发：实时多人游戏服务器</p>
+</li>
+</ul>
+<ol>
+<li><strong>架构设计</strong>：</li>
+</ol>
+<ul>
+<li><p>学习微服务架构设计</p>
+</li>
+<li><p>掌握事件驱动架构</p>
+</li>
+<li><p>理解分布式系统原理</p>
+</li>
+</ul>
+<ol>
+<li><strong>持续学习</strong>：</li>
+</ol>
+<ul>
+<li><p>关注 Reactor 官方更新和新特性</p>
+</li>
+<li><p>阅读相关技术论文和博客</p>
+</li>
+<li><p>参与开源社区贡献</p>
+</li>
+<li><p>参加技术会议和分享会</p>
+</li>
+</ul>
+<h3 id="7-3-结语"><a href="#7-3-结语" class="headerlink" title="7.3 结语"></a>7.3 结语</h3><p>学习 Reactor 框架的 Flux 和 Mono 不仅仅是掌握两个类的使用，更是掌握一种新的编程范式 —— 反应式编程。这种范式在处理现代应用的复杂性、并发性和实时性方面展现出巨大优势，特别是在 AI 智能体框架这样的前沿领域。</p>
+<p>通过本指南的学习路径，你将不仅获得扎实的理论基础，更重要的是具备在实际项目中应用这些知识的能力。记住，反应式编程的精髓在于<strong>数据流的抽象</strong>和<strong>异步操作的组合</strong>，而 Reactor 通过 Flux 和 Mono 为我们提供了优雅而强大的工具。</p>
+<p>在 AI 时代，掌握反应式编程将成为区分优秀开发者的重要技能。无论是构建智能客服系统、自动驾驶平台，还是金融风控系统，Reactor 都将是你工具箱中不可或缺的利器。</p>
+<p><strong>最后建议</strong>：不要止步于本指南的内容，要在实践中不断探索和创新。React（推理与行动）模式告诉我们，学习是一个不断迭代的过程。保持好奇心，勇于尝试，你将在反应式编程的世界中发现更多精彩！</p>
+<p><strong>参考资料&#x20;</strong></p>
+<p>[1] Reactor 3 Reference Guide(pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.3/reference/reactor-core-reference-guide-3.8.3.pdf"> https://projectreactor.io/docs/core/3.8.3/reference/reactor-core-reference-guide-3.8.3.pdf</a></p>
+<p>[2] Reactor Core  changelog<a target="_blank" rel="noopener" href="https://java.libhunt.com/reactor-core-changelog"> https://java.libhunt.com/reactor-core-changelog</a></p>
+<p>[3] Maven Repository: io.projectreactor » reactor-core » 3.8.0-M6 - Used By<a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/io.projectreactor/reactor-core/3.8.0-M6/used-by?sort=newest"> https://mvnrepository.com/artifact/io.projectreactor/reactor-core/3.8.0-M6/used-by?sort=newest</a></p>
+<p>[4] Reactor<a target="_blank" rel="noopener" href="https://github.com/reactor"> https://github.com/reactor</a></p>
+<p>[5] Risk-Informed, Technology-Inclusive Regulatory Framework for Advanced Reactors<a target="_blank" rel="noopener" href="https://docs.regulations.justia.com/entries/2026-03-30/2026-06048.pdf"> https://docs.regulations.justia.com/entries/2026-03-30/2026-06048.pdf</a></p>
+<p>[6] GitHub - journeyapps-labs&#x2F;reactor: Ambitious web application framework designed to provide IDE-like user interface experiences on the web. · GitHub<a target="_blank" rel="noopener" href="https://github.com/journeyapps-labs/reactor"> https://github.com/journeyapps-labs/reactor</a></p>
+<p>[7] GitHub - reactor&#x2F;reactor-core: Non-Blocking Reactive Foundation for the JVM · GitHub<a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core"> https://github.com/reactor/reactor-core</a></p>
+<p>[8] Reactor 3 Reference Guide(pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.2.0.M4/reference/reactor-core-reference-guide-3.2.0.M4.pdf"> https://projectreactor.io/docs/core/3.2.0.M4/reference/reactor-core-reference-guide-3.2.0.M4.pdf</a></p>
+<p>[9] Reactor中Flux与Mono有何区别?各自适用什么场景? - CSDN文库<a target="_blank" rel="noopener" href="https://wenku.csdn.net/answer/6cnx6w2cny"> https://wenku.csdn.net/answer/6cnx6w2cny</a></p>
+<p>[10] Reactor 3 Reference Guide(pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.5.4/reference/reactor-core-reference-guide-3.5.4.pdf"> https://projectreactor.io/docs/core/3.5.4/reference/reactor-core-reference-guide-3.5.4.pdf</a></p>
+<p>[11] Reactor响应式编程核心详解:Flux、Mono、背压与线程调度实战 - CSDN文库<a target="_blank" rel="noopener" href="https://wenku.csdn.net/doc/86ja8vqffr"> https://wenku.csdn.net/doc/86ja8vqffr</a></p>
+<p>[12] Project Reactor의 Mono와 Flux<a target="_blank" rel="noopener" href="https://velog.io/@duskafka/Project-Reactor%EC%9D%98-Mono%EC%99%80Flux"> https:&#x2F;&#x2F;velog.io&#x2F;@duskafka&#x2F;Project-Reactor%EC%9D%98-Mono%EC%99%80Flux</a></p>
+<p>[13] Reactor 中的 Mono 和 Flux:深入解析与操作符指南_mono flux-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/chen0613/article/details/148710249"> https://blog.csdn.net/chen0613/article/details/148710249</a></p>
+<p>[14] Reactor中的Flux和Mono的区别 - 技术栈<a target="_blank" rel="noopener" href="https://jishuzhan.net/article/1899385394286940161"> https://jishuzhan.net/article/1899385394286940161</a></p>
+<p>[15] Reactor 3 Reference Guide(pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.7.6/reference/reactor-core-reference-guide-3.7.6.pdf"> https://projectreactor.io/docs/core/3.7.6/reference/reactor-core-reference-guide-3.7.6.pdf</a></p>
+<p>[16] reactor-core<a target="_blank" rel="noopener" href="https://central.sonatype.com/artifact/io.projectreactor/reactor-core/3.4.18"> https://central.sonatype.com/artifact/io.projectreactor/reactor-core/3.4.18</a></p>
+<p>[17] reactor-core<a target="_blank" rel="noopener" href="https://central.sonatype.com/artifact/io.projectreactor/reactor-core/3.3.0.RELEASE"> https://central.sonatype.com/artifact/io.projectreactor/reactor-core/3.3.0.RELEASE</a></p>
+<p>[18] Reactor 3 Reference Guide</p>
+<p>Step(pdf)<a target="_blank" rel="noopener" href="https://docs.spring.io/projectreactor/reactor-core/docs/3.3.x/reference/pdf/reactor-core-reference-guide-3.3.22.RELEASE.pdf"> https://docs.spring.io/projectreactor/reactor-core/docs/3.3.x/reference/pdf/reactor-core-reference-guide-3.3.22.RELEASE.pdf</a></p>
+<p>[19] Reactor 3 Reference Guide<a target="_blank" rel="noopener" href="https://docs.spring.io/projectreactor/reactor-core/docs/3.4.0-M2/reference/html/"> https://docs.spring.io/projectreactor/reactor-core/docs/3.4.0-M2/reference/html/</a></p>
+<p>[20] (4)Reactor 3快速上手——响应式Spring的道法术器_reactor3-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/get_set/article/details/79480172"> https://blog.csdn.net/get_set&#x2F;article&#x2F;details&#x2F;79480172</a></p>
+<p>[21] Maven Repository: io.projectreactor » reactor-core » 3.7.9 - Used By<a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/io.projectreactor/reactor-core/3.7.9/used-by?p=7"> https://mvnrepository.com/artifact/io.projectreactor/reactor-core/3.7.9/used-by?p=7</a></p>
+<p>[22] ReactorAI<a target="_blank" rel="noopener" href="https://apps.apple.com/cr/app/reactorai/id6739567267"> https://apps.apple.com/cr/app/reactorai/id6739567267</a></p>
+<p>[23] Python + Agents: Building AI agents and workflows with Agent Framework<a target="_blank" rel="noopener" href="https://developer.microsoft.com/it-it/reactor/series/S-1631/"> https://developer.microsoft.com/it-it/reactor/series/S-1631/</a></p>
+<p>[24] Development of an Autonomous Reactor Operation LLM Agent for Real-Time Detection and Proactive Mitigation<a target="_blank" rel="noopener" href="https://www.kns.org/files/pre_paper/54/25A-295-%ED%95%9C%EA%B8%B0%ED%97%8C.pdf"> https://www.kns.org/files/pre_paper&#x2F;54&#x2F;25A-295-%ED%95%9C%EA%B8%B0%ED%97%8C.pdf</a></p>
+<p>[25] Agent–Reactor Integration for Intelligent Wastewater Treatment: Experimental Validation and Interpretability of Reinforcement-Learning-Based Control<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.est.5c15251"> https://doi.org/10.1021/acs.est.5c15251</a></p>
+<p>[26] REACTOR USAGE MAXIMIZATION GUIDE<a target="_blank" rel="noopener" href="https://github.com/seanchatmangpt/ai-self-sustaining-system/blob/master/REACTOR-USAGE-MAXIMIZATION.md"> https://github.com/seanchatmangpt/ai-self-sustaining-system/blob/master/REACTOR-USAGE-MAXIMIZATION.md</a></p>
+<p>[27] Python + Agents: Adding a human in the loop to agentic workflows<a target="_blank" rel="noopener" href="https://reactor.microsoft.com/ja-jp/reactor/events/26693/"> https://reactor.microsoft.com/ja-jp/reactor/events/26693/</a></p>
+<p>[28] Build an AI agent with Microsoft Agent Framework, PostgreSQL, and API Management<a target="_blank" rel="noopener" href="https://developer.microsoft.com/ja-jp/reactor/events/26508/"> https://developer.microsoft.com/ja-jp/reactor/events/26508/</a></p>
+<p>[29] Deployed AI Agents for Industrial Asset Management: CodeReAct Framework for Event Analysis and Work Order Automation(pdf)<a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/download/41453/45414"> https://ojs.aaai.org/index.php/AAAI/article/download/41453/45414</a></p>
+<p>[30] llm-react智能体:融合推理与行动的ai框架<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14531597"> https://blog.51cto.com/u_15239532&#x2F;14531597</a></p>
+<p>[31] 什么是 ReAct 智能体?| IBM<a target="_blank" rel="noopener" href="https://www.ibm.com/cn-zh/think/topics/react-agent#1287801558"> https://www.ibm.com/cn-zh/think/topics/react-agent#1287801558</a></p>
+<p>[32] ReAct与Reflection架构驱动Agent智能进化与动态协同<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/7579412238671530853/?region=&mid=7579412217804639016&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=NMA4MgR4XH5DNcmY0kDLkh5mAXedPi65efQEmXbdAyY-&share_version=280700&ts=1775227290&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/7579412238671530853/?region=&amp;mid&#x3D;7579412217804639016&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;NMA4MgR4XH5DNcmY0kDLkh5mAXedPi65efQEmXbdAyY-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227290&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[33] 开源智能体框架——ReAct 原理、架构与代码实现<a target="_blank" rel="noopener" href="https://tinyseeking.github.io/p/%E5%BC%80%E6%BA%90%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6react-%E5%8E%9F%E7%90%86%E6%9E%B6%E6%9E%84%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/"> https://tinyseeking.github.io/p/%E5%BC%80%E6%BA%90%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6react-%E5%8E%9F%E7%90%86%E6%9E%B6%E6%9E%84%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/</a></p>
+<p>[34] 智能体分类:从反应式到混合式的架构演进与实践_本体智能体-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/m290345792/article/details/151904558"> https://blog.csdn.net/m290345792/article/details/151904558</a></p>
+<p>[35] Efficient Parallel Reinforcement Learning Framework using the Reactor Model(pdf)<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.04704.pdf"> https://arxiv.org/pdf/2312.04704.pdf</a></p>
+<p>[36] Qu’est-ce qu’un agent ReAct ?<a target="_blank" rel="noopener" href="https://www.ibm.com/fr-fr/think/topics/react-agent"> https://www.ibm.com/fr-fr/think/topics/react-agent</a></p>
+<p>[37] 反应式编程与机器学习算法的协同优化-洞察阐释 - 豆丁网<a target="_blank" rel="noopener" href="https://www.docin.com/touch_new/preview_new.do?id=4877743404"> https://www.docin.com/touch_new&#x2F;preview_new.do?id&#x3D;4877743404</a></p>
+<p>[38] Python + Agents: Building AI agents and workflows with Agent Framework<a target="_blank" rel="noopener" href="https://reactor.microsoft.com/ja-jp/reactor/series/s-1631/"> https://reactor.microsoft.com/ja-jp/reactor/series/s-1631/</a></p>
+<p>[39] An AI-Driven Cyber-Physical Testbed for Small-Scale Advanced Reactors<a target="_blank" rel="noopener" href="https://www.nrc.gov/docs/ML2507/ML25078A223.pdf"> https://www.nrc.gov/docs/ML2507/ML25078A223.pdf</a></p>
+<p>[40] java中的反应式编程:rxjava与projectreactor<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42567046/article/details/141204237"> https://blog.csdn.net/weixin_42567046&#x2F;article&#x2F;details&#x2F;141204237</a></p>
+<p>[41] Java Reactive Programming: A Strategic Guide to High-Throughput Enterprise Systems<a target="_blank" rel="noopener" href="https://www.developers.dev/tech-talk/java-reactive-programming.html"> https://www.developers.dev/tech-talk/java-reactive-programming.html</a></p>
+<p>[42] Сравнение реактивных структур Java<a target="_blank" rel="noopener" href="https://ask-dev.ru/info/278991/comparison-of-java-reactive-frameworks"> https://ask-dev.ru/info/278991/comparison-of-java-reactive-frameworks</a></p>
+<p>[43] Reactor 3 Reference Guide<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.6.14/reference/reactor-core-reference-guide-3.6.14.pdf"> https://projectreactor.io/docs/core/3.6.14/reference/reactor-core-reference-guide-3.6.14.pdf</a></p>
+<p>[44] RxJava のサンプルコードを Reactor-Core で書き直す<a target="_blank" rel="noopener" href="https://qiita.com/toastkidjp/items/800ecaaa854750d8526d"> https://qiita.com/toastkidjp/items/800ecaaa854750d8526d</a></p>
+<p>[45] Reactive Programming in Java with Project Reactor and RxJava<a target="_blank" rel="noopener" href="https://www.w3computing.com/articles/reactive-programming-java-project-reactor-rxjava/"> https://www.w3computing.com/articles/reactive-programming-java-project-reactor-rxjava/</a></p>
+<p>[46] RxJava vs. Project Reactor: Which is Right for Your Project?<a target="_blank" rel="noopener" href="https://toxigon.com/comparing-rxjava-and-project-reactor"> https://toxigon.com/comparing-rxjava-and-project-reactor</a></p>
+<p>[47] Reactive<a target="_blank" rel="noopener" href="https://spring.io/reactive/"> https://spring.io/reactive/</a></p>
+<p>[48] 深入解析Spring WebFlux:Reactor与响应式编程的核心原理与应用_reactor-netty reactor.schedulers.defaultpoolsize: -CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/zuiyuelong/article/details/150452806"> https://blog.csdn.net/zuiyuelong/article/details/150452806</a></p>
+<p>[49] 天猫采用Reactor技术通过空间折叠优化并发请求性能<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/7580281300150488330/?region=&mid=7580281393893542682&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=bIzAIrwoEDHgEmPxxrqd7LA1I8nunkUY4zbJ.Ca6xVM-&share_version=280700&ts=1775227318&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/7580281300150488330/?region=&amp;mid&#x3D;7580281393893542682&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;bIzAIrwoEDHgEmPxxrqd7LA1I8nunkUY4zbJ.Ca6xVM-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227318&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[50] Web on Reactive Stack(pdf)<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.3.23/reference/pdf/web-reactive.pdf"> https://docs.spring.io/spring-framework/docs/5.3.23/reference/pdf/web-reactive.pdf</a></p>
+<p>[51] 万字长文:Spring WebFlux + Project Reactor 全栈指南——构建响应式Java云原生应用-腾讯云开发者社区-腾讯云<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2648739?policyId=1003"> https://cloud.tencent.com/developer/article/2648739?policyId=1003</a></p>
+<p>[52] 响应式编程_05 Project Reactor 框架_小小工匠的技术博客_51CTO博客<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14530587"> https://blog.51cto.com/u_15239532&#x2F;14530587</a></p>
+<p>[53] RxJava vs Vert.x vs WebFlux 响应式编程优缺点_vert.x和webflux-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/u014391334/article/details/147055016"> https://blog.csdn.net/u014391334/article/details/147055016</a></p>
+<p>[54] Project Reactor vs RxJava<a target="_blank" rel="noopener" href="https://stackshare.io/stackups/project-reactor-vs-rxjava"> https://stackshare.io/stackups/project-reactor-vs-rxjava</a></p>
+<p>[55] Vert.x RxJava<a target="_blank" rel="noopener" href="https://vertx.io/docs/5.0.3/vertx-rx/java2/"> https://vertx.io/docs/5.0.3/vertx-rx/java2/</a></p>
+<p>[56] GitHub - ankushs92&#x2F;vertx-vs-spring-reactor: A benchmark comparing web services made using Groovy, Vertx and vertx-redis-client vs Groovy, Spring Reactor and lettuce · GitHub<a target="_blank" rel="noopener" href="https://github.com/ankushs92/vertx-vs-spring-reactor"> https://github.com/ankushs92/vertx-vs-spring-reactor</a></p>
+<p>[57] Reactor 3 Reference Guide<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.6.3/reference/reactor-core-reference-guide-3.6.3.pdf"> https://projectreactor.io/docs/core/3.6.3/reference/reactor-core-reference-guide-3.6.3.pdf</a></p>
+<p>[58] Reactor 3 Reference Guide<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.8.0-M4/reference/reactor-core-reference-guide-3.8.0-M4.pdf"> https://projectreactor.io/docs/core/3.8.0-M4/reference/reactor-core-reference-guide-3.8.0-M4.pdf</a></p>
+<p>[59] Analysing the Performance and Costs of Reactive Programming Libraries in Java(pdf)<a target="_blank" rel="noopener" href="https://inria.hal.science/hal-03409277/file/paper-author-version.pdf"> https://inria.hal.science/hal-03409277/file/paper-author-version.pdf</a></p>
+<p>[60] Simple Ways to Create a Flux or Mono and Subscribe to It :: Reactor Core Reference Guide<a target="_blank" rel="noopener" href="https://docs.spring.io/projectreactor/reactor-core/docs/current-SNAPSHOT/reference/html/coreFeatures/simple-ways-to-create-a-flux-or-mono-and-subscribe-to-it.html"> https://docs.spring.io/projectreactor/reactor-core/docs/current-SNAPSHOT/reference/html/coreFeatures/simple-ways-to-create-a-flux-or-mono-and-subscribe-to-it.html</a></p>
+<p>[61] Reactor 中的 Mono 和 Flux:深入解析与操作符指南_mono flux-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/chen0613/article/details/148710249"> https://blog.csdn.net/chen0613/article/details/148710249</a></p>
+<p>[62] (pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.5.0-RC1/reference/reactor-core-reference-guide-3.5.0-RC1.pdf"> https://projectreactor.io/docs/core/3.5.0-RC1/reference/reactor-core-reference-guide-3.5.0-RC1.pdf</a></p>
+<p>[63] Java 教程 - Spring 5 新 功能 - Web flux - 响应 式 编程 （ Reactor ）<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/6869549869531401485/?region=&mid=6869550408667269901&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=FT5gJaUSjRi4mMHz4eo07x1cOuy_U9k0a33u8v16GHI-&share_version=280700&ts=1775227351&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/6869549869531401485/?region=&amp;mid&#x3D;6869550408667269901&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;FT5gJaUSjRi4mMHz4eo07x1cOuy_U9k0a33u8v16GHI-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227351&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[64] Reactor框架核心指南:深入解析Flux与Mono异步数据流编程 - CSDN文库<a target="_blank" rel="noopener" href="https://wenku.csdn.net/doc/2ejkz8dtd6"> https://wenku.csdn.net/doc/2ejkz8dtd6</a></p>
+<p>[65] 响应式编程(Reactive Programming with Reactor)!_wx62babcbc7c892的技术博客_51CTO博客<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15700799/14505827"> https://blog.51cto.com/u_15700799&#x2F;14505827</a></p>
+<p>[66] 【笔记02】【Reactor 响应式编程】_reactor响应式编程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36882793/article/details/158622045"> https://blog.csdn.net/qq_36882793&#x2F;article&#x2F;details&#x2F;158622045</a></p>
+<p>[67] GitHub - reactor&#x2F;reactor-core: Non-Blocking Reactive Foundation for the JVM · GitHub<a target="_blank" rel="noopener" href="https://github.com/reactor/reactor-core"> https://github.com/reactor/reactor-core</a></p>
+<p>[68] Reactor 3 Reference Guide<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.3.0.RELEASE/reference/reactor-core-reference-guide-3.3.0.RELEASE.pdf"> https://projectreactor.io/docs/core/3.3.0.RELEASE/reference/reactor-core-reference-guide-3.3.0.RELEASE.pdf</a></p>
+<p>[69] Reactor 3 Reference Guide</p>
+<p>Step(pdf)<a target="_blank" rel="noopener" href="https://docs.spring.io/projectreactor/reactor-core/docs/3.5.0-M6/reference/pdf/reactor-core-reference-guide-3.5.0-M6.pdf"> https://docs.spring.io/projectreactor/reactor-core/docs/3.5.0-M6/reference/pdf/reactor-core-reference-guide-3.5.0-M6.pdf</a></p>
+<p>[70] React项目核心API文档中英对照版免费下载 - CSDN文库<a target="_blank" rel="noopener" href="https://wenku.csdn.net/doc/7x3azw4f2s"> https://wenku.csdn.net/doc/7x3azw4f2s</a></p>
+<p>[71] Reactor 3 Reference Guide(pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.2.19.RELEASE/reference/reactor-core-reference-guide-3.2.19.RELEASE.pdf"> https://projectreactor.io/docs/core/3.2.19.RELEASE/reference/reactor-core-reference-guide-3.2.19.RELEASE.pdf</a></p>
+<p>[72] Project Reactor响应式编程简介_projectreactor中文文档-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/CSDN2497242041/article/details/148596085"> https://blog.csdn.net/CSDN2497242041/article/details/148596085</a></p>
+<p>[73] Project Reactor 核心发布者:Flux 与 Mono 的区别与特性-java教程-PHP中文网<a target="_blank" rel="noopener" href="https://m.php.cn/faq/1947115.html"> https://m.php.cn/faq/1947115.html</a></p>
+<p>[74] 响应式编程 Reactor 学习小记_reactor.core.publisher.mono-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhousenshan/article/details/130472356"> https://blog.csdn.net/zhousenshan/article/details/130472356</a></p>
+<p>[75] Flux和Mono详细讲解 - CSDN文库<a target="_blank" rel="noopener" href="https://wenku.csdn.net/answer/69xdg48a45"> https://wenku.csdn.net/answer/69xdg48a45</a></p>
+<p>[76] Reactor 3 Reference Guide(pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.5.19/reference/reactor-core-reference-guide-3.5.19.pdf"> https://projectreactor.io/docs/core/3.5.19/reference/reactor-core-reference-guide-3.5.19.pdf</a></p>
+<p>[77] Reactor-core 响应式编程 spring-boot-starter-webflux-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42152032/article/details/159709810"> https://blog.csdn.net/qq_42152032&#x2F;article&#x2F;details&#x2F;159709810</a></p>
+<p>[78] Reactor 中的 Mono 和 Flux:深入解析与操作符指南_mono flux-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/chen0613/article/details/148710249"> https://blog.csdn.net/chen0613/article/details/148710249</a></p>
+<p>[79] 响应式编程框架Reactor【2】_reactor响应式编程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/ldcigame/article/details/150996998"> https://blog.csdn.net/ldcigame/article/details/150996998</a></p>
+<p>[80] 04-流处理操作符<a target="_blank" rel="noopener" href="https://gacfox.com/notes/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/Java/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/reactor-core-%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B/04-%E6%B5%81%E5%A4%84%E7%90%86%E6%93%8D%E4%BD%9C%E7%AC%A6/04-%E6%B5%81%E5%A4%84%E7%90%86%E6%93%8D%E4%BD%9C%E7%AC%A6.md"> https://gacfox.com/notes/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/Java/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/reactor-core-%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B/04-%E6%B5%81%E5%A4%84%E7%90%86%E6%93%8D%E4%BD%9C%E7%AC%A6/04-%E6%B5%81%E5%A4%84%E7%90%86%E6%93%8D%E4%BD%9C%E7%AC%A6.md</a></p>
+<p>[81] Java 教程 - Spring 5 新 功能 - Web flux - 响应 式 编程 （ Reactor ）<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/6869549869531401485/?region=&mid=6869550408667269901&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=FT5gJaUSjRi4mMHz4eo07x1cOuy_U9k0a33u8v16GHI-&share_version=280700&ts=1775227367&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/6869549869531401485/?region=&amp;mid&#x3D;6869550408667269901&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;FT5gJaUSjRi4mMHz4eo07x1cOuy_U9k0a33u8v16GHI-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227367&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[82] Project Reactor 操作符实战:转换与处理响应式数据流-java教程-PHP中文网<a target="_blank" rel="noopener" href="https://m.php.cn/faq/1947169.html"> https://m.php.cn/faq/1947169.html</a></p>
+<p>[83] 【响应式编程】Reactor 常用操作符与使用指南_reactor 操作符-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/hiliang521/article/details/147198031"> https://blog.csdn.net/hiliang521/article/details/147198031</a></p>
+<p>[84] 万字长文详解Spring WebFlux_spring web flux-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_36873225/article/details/142464225"> https://blog.csdn.net/weixin_36873225&#x2F;article&#x2F;details&#x2F;142464225</a></p>
+<p>[85] 响应式编程框架Reactor【4】_reactor框架学习-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/ldcigame/article/details/151027128"> https://blog.csdn.net/ldcigame/article/details/151027128</a></p>
+<p>[86] Reactor Schedulers_schedulers服务-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_37607945/article/details/148928739"> https://blog.csdn.net/m0_37607945&#x2F;article&#x2F;details&#x2F;148928739</a></p>
+<p>[87] Reactor 3 Reference Guide(pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.5.5/reference/reactor-core-reference-guide-3.5.5.pdf"> https://projectreactor.io/docs/core/3.5.5/reference/reactor-core-reference-guide-3.5.5.pdf</a></p>
+<p>[88] 响应式编程框架Reactor【9】 - 技术栈<a target="_blank" rel="noopener" href="https://jishuzhan.net/article/1962791451500789762"> https://jishuzhan.net/article/1962791451500789762</a></p>
+<p>[89] Java中的反应式编程_java响应式编程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhousenshan/article/details/129970668"> https://blog.csdn.net/zhousenshan/article/details/129970668</a></p>
+<p>[90] 스프링 리액터 시작하기 (5) Scheduler<a target="_blank" rel="noopener" href="https://velog.io/@bsj805/%EC%8A%A4%ED%94%84%EB%A7%81-%EB%A6%AC%EC%95%A1%ED%84%B0-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-5-Scheduler"> https:&#x2F;&#x2F;velog.io&#x2F;@bsj805&#x2F;%EC%8A%A4%ED%94%84%EB%A7%81-%EB%A6%AC%EC%95%A1%ED%84%B0-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-5-Scheduler</a></p>
+<p>[91] Reactor Core 错误处理机制深度解析-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/gitblog_01111/article/details/148507628"> https://blog.csdn.net/gitblog_01111&#x2F;article&#x2F;details&#x2F;148507628</a></p>
+<p>[92] 【笔记02】【Reactor 响应式编程】_reactor响应式编程-CSDN博客<a target="_blank" rel="noopener" href="https://kingfish.blog.csdn.net/article/details/158622045"> https://kingfish.blog.csdn.net/article/details/158622045</a></p>
+<p>[93] Reactor: Error 2 - Recovery<a target="_blank" rel="noopener" href="https://velog.io/@zenon8485/Reactor-Error-2-Recovery"> https:&#x2F;&#x2F;velog.io&#x2F;@zenon8485&#x2F;Reactor-Error-2-Recovery</a></p>
+<p>[94] Reactor流中“最终”逻辑与错误处理的响应式实践-java教程-PHP中文网<a target="_blank" rel="noopener" href="https://m.php.cn/faq/1438422.html"> https://m.php.cn/faq/1438422.html</a></p>
+<p>[95] Project Reactor 响应式编程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43866408/article/details/139169834"> https://blog.csdn.net/weixin_43866408&#x2F;article&#x2F;details&#x2F;139169834</a></p>
+<p>[96] Reactor流中的异常处理与资源清理:告别阻塞的finally-java教程-PHP中文网<a target="_blank" rel="noopener" href="https://m.php.cn/faq/1438389.html"> https://m.php.cn/faq/1438389.html</a></p>
+<p>[97] [Project Reactor] 8. Reactor에서의 Backpressure: 과도한 데이터 흐름을 제어하는 방법<a target="_blank" rel="noopener" href="https://velog.io/@yin/Reactive-Programming-Reactor%EC%97%90%EC%84%9C%EC%9D%98-Backpressure-%EA%B3%BC%EB%8F%84%ED%95%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%9D%90%EB%A6%84%EC%9D%84-%EC%A0%9C%EC%96%B4%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95"> https:&#x2F;&#x2F;velog.io&#x2F;@yin&#x2F;Reactive-Programming-Reactor%EC%97%90%EC%84%9C%EC%9D%98-Backpressure-%EA%B3%BC%EB%8F%84%ED%95%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%9D%90%EB%A6%84%EC%9D%84-%EC%A0%9C%EC%96%B4%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95</a></p>
+<p>[98] 每日一博 - 背压(Backpressure)的核心原理与实现方式_小小工匠的技术博客_51CTO博客<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14531523"> https://blog.51cto.com/u_15239532&#x2F;14531523</a></p>
+<p>[99] 背压控制 - CSDN文库<a target="_blank" rel="noopener" href="https://wenku.csdn.net/answer/6b592xipfe"> https://wenku.csdn.net/answer/6b592xipfe</a></p>
+<p>[100] 背压阀的作用原理与选型要点解析<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/7560584359342984467/?region=&mid=6674391749772708616&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=Zx3dI_C4Y68Sjb0s3FZaovfFEb_iXXHq62iIPho_f2I-&share_version=280700&ts=1775227377&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/7560584359342984467/?region=&amp;mid&#x3D;6674391749772708616&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;Zx3dI_C4Y68Sjb0s3FZaovfFEb_iXXHq62iIPho_f2I-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227377&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[101] 软件开发中的背压机制详解-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/u011487024/article/details/159712288"> https://blog.csdn.net/u011487024/article/details/159712288</a></p>
+<p>[102] 每日一博 - Kafka、Reactor、NGINX的背压控制与性能调优_51CTO博客_flink 背压会导致kafka积压吗?<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14531567"> https://blog.51cto.com/u_15239532&#x2F;14531567</a></p>
+<p>[103] Reactor Core 组合操作符终极指南:zip、combineLatest、merge 全面解析-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/gitblog_01033/article/details/154395188"> https://blog.csdn.net/gitblog_01033&#x2F;article&#x2F;details&#x2F;154395188</a></p>
+<p>[104] Spring.WebFlux极简(2)_flux.concatmap-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/Fmbah/article/details/150118005"> https://blog.csdn.net/Fmbah/article/details/150118005</a></p>
+<p>[105] 【笔记02】【Reactor 响应式编程】_reactor响应式编程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36882793/article/details/158622045"> https://blog.csdn.net/qq_36882793&#x2F;article&#x2F;details&#x2F;158622045</a></p>
+<p>[106] 响应式编程框架Reactor【2】_reactor响应式编程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/ldcigame/article/details/150996998"> https://blog.csdn.net/ldcigame/article/details/150996998</a></p>
+<p>[107] Java reactor编程详解-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/onlymscn/article/details/154580089"> https://blog.csdn.net/onlymscn/article/details/154580089</a></p>
+<p>[108] Flux.zip() 方法详解_mb6295b5d8b4d19的技术博客_51CTO博客<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15668812/13823903"> https://blog.51cto.com/u_15668812&#x2F;13823903</a></p>
+<p>[109] Reactor 指南中文版_V2.0<a target="_blank" rel="noopener" href="https://doc.oschina.net/projectreactor?t=44496"> https://doc.oschina.net/projectreactor?t=44496</a></p>
+<p>[110] Reactor Sinks 全面解析:它解决了什么问题，为什么 WebFlux 项目离不开它_sinks.many-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45515182/article/details/156280564"> https://blog.csdn.net/qq_45515182&#x2F;article&#x2F;details&#x2F;156280564</a></p>
+<p>[111] 如何在 Reactor 中向现有 Flux 引入数据并合并流-java教程-PHP中文网<a target="_blank" rel="noopener" href="https://m.php.cn/faq/1489806.html"> https://m.php.cn/faq/1489806.html</a></p>
+<p>[112] [Project Reactor] 9. Reactor Sinks: 외부 이벤트를 리액티브 스트림에 푸시하는 방법<a target="_blank" rel="noopener" href="https://velog.io/@yin/Reactor-Sinks"> https:&#x2F;&#x2F;velog.io&#x2F;@yin&#x2F;Reactor-Sinks</a></p>
+<p>[113] Java高性能应用开发中的Reactor模式解析与多线程模型应用<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/7436243480797580607/?region=&mid=7436244270471809829&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=bP95j0tL5wq5O05d.qCEBWNxQXPnW2uI3SBul_63LL4-&share_version=280700&ts=1775227377&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/7436243480797580607/?region=&amp;mid&#x3D;7436244270471809829&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;bP95j0tL5wq5O05d.qCEBWNxQXPnW2uI3SBul_63LL4-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227377&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[114] 리액티브 프로그래밍 시작하기 - Reactor편<a target="_blank" rel="noopener" href="https://velog.io/@suhongkim98/%EB%A6%AC%EC%95%A1%ED%8B%B0%EB%B8%8C-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-Reactor%ED%8E%B8-2"> https:&#x2F;&#x2F;velog.io&#x2F;@suhongkim98&#x2F;%EB%A6%AC%EC%95%A1%ED%8B%B0%EB%B8%8C-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-Reactor%ED%8E%B8-2</a></p>
+<p>[115] Reactor响应式编程中Flux和FluxSink_reactor.io flux sink-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/ttyy1112/article/details/157470747"> https://blog.csdn.net/ttyy1112/article/details/157470747</a></p>
+<p>[116] 响应式编程_06 使用 Flux 和 Mono 高效构建响应式数据流_51CTO博客_webflux响应式编程<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14530583"> https://blog.51cto.com/u_15239532&#x2F;14530583</a></p>
+<p>[117] Spring Reactor 实战训练教程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/gitblog_00909/article/details/142509237"> https://blog.csdn.net/gitblog_00909&#x2F;article&#x2F;details&#x2F;142509237</a></p>
+<p>[118] Java 响应式编程实战:Spring WebFlux+Reactor 构建高并发电商系统_java spring reactive-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_72256543/article/details/155441899"> https://blog.csdn.net/m0_72256543&#x2F;article&#x2F;details&#x2F;155441899</a></p>
+<p>[119] 【JAVA 进阶】深入探秘Netty之Reactor模型:从理论到实战_reactor-netty实战-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_63944437/article/details/155262631"> https://blog.csdn.net/weixin_63944437&#x2F;article&#x2F;details&#x2F;155262631</a></p>
+<p>[120] 天猫采用Reactor技术通过空间折叠优化并发请求性能<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/7580281300150488330/?region=&mid=7580281393893542682&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=bIzAIrwoEDHgEmPxxrqd7LA1I8nunkUY4zbJ.Ca6xVM-&share_version=280700&ts=1775227384&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/7580281300150488330/?region=&amp;mid&#x3D;7580281393893542682&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;bIzAIrwoEDHgEmPxxrqd7LA1I8nunkUY4zbJ.Ca6xVM-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227384&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[121] 万字长文:Spring WebFlux + Project Reactor 全栈指南——构建响应式Java云原生应用-腾讯云开发者社区-腾讯云<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2648739"> https://cloud.tencent.com/developer/article/2648739</a></p>
+<p>[122] projectreactor响应式编程框架技术详解与实践指南<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/1681936"> https://developer.aliyun.com/article/1681936</a></p>
+<p>[123] Web on Reactive Stack(pdf)<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.3.8/reference/pdf/web-reactive.pdf"> https://docs.spring.io/spring-framework/docs/5.3.8/reference/pdf/web-reactive.pdf</a></p>
+<p>[124] Reactive Web Applications | Spring Boot3.3.2-SNAPSHOT中文文档|Spring官方文档|SpringBoot 教程|Spring中文网<a target="_blank" rel="noopener" href="https://www.spring-doc.cn/spring-boot/3.3.2-SNAPSHOT/reference_web_reactive.html"> https://www.spring-doc.cn/spring-boot/3.3.2-SNAPSHOT/reference_web_reactive.html</a></p>
+<p>[125] Spring Boot 集成 Spring WebFlux，一文搞定!-云社区-华为云<a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/blogs/456468"> https://bbs.huaweicloud.com/blogs/456468</a></p>
+<p>[126] 响应式编程(Reactive Programming with Reactor)!_wx62babcbc7c892的技术博客_51CTO博客<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15700799/14505827"> https://blog.51cto.com/u_15700799&#x2F;14505827</a></p>
+<p>[127] Spring WebFlux:响应式编程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/2509_94088974/article/details/155161124"> https://blog.csdn.net/2509_94088974&#x2F;article&#x2F;details&#x2F;155161124</a></p>
+<p>[128] 2026大厂必用|WebFlux实战全解析，彻底分清与Spring MVC的区别_从程序员到架构师<a target="_blank" rel="noopener" href="http://m.toutiao.com/group/7603970959619392041/?upstream_biz=doubao"> http://m.toutiao.com/group/7603970959619392041/?upstream_biz&#x3D;doubao</a></p>
+<p>[129] 响应式编程框架Reactor【6】_reactor sinks-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/ldcigame/article/details/151051441"> https://blog.csdn.net/ldcigame/article/details/151051441</a></p>
+<p>[130] Reactor Sinks 全面解析:它解决了什么问题，为什么 WebFlux 项目离不开它_sinks.many-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45515182/article/details/156280564"> https://blog.csdn.net/qq_45515182&#x2F;article&#x2F;details&#x2F;156280564</a></p>
+<p>[131] Reactor Core 版本升级指南:从 3.3.x 到 3.8.x 的完整教程-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/gitblog_00755/article/details/154398446"> https://blog.csdn.net/gitblog_00755&#x2F;article&#x2F;details&#x2F;154398446</a></p>
+<p>[132] Reactor响应式编程中Sinks.Many_reactor sinks-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/ttyy1112/article/details/157472111"> https://blog.csdn.net/ttyy1112/article/details/157472111</a></p>
+<p>[133] Reactor Sinks-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_37607945/article/details/149025277"> https://blog.csdn.net/m0_37607945&#x2F;article&#x2F;details&#x2F;149025277</a></p>
+<p>[134] [Project Reactor] 9. Reactor Sinks: 외부 이벤트를 리액티브 스트림에 푸시하는 방법<a target="_blank" rel="noopener" href="https://velog.io/@yin/Reactor-Sinks"> https:&#x2F;&#x2F;velog.io&#x2F;@yin&#x2F;Reactor-Sinks</a></p>
+<p>[135] Reactor 3 Reference Guide(pdf)<a target="_blank" rel="noopener" href="https://projectreactor.io/docs/core/3.2.3.RELEASE/reference/reactor-core-reference-guide-3.2.3.RELEASE.pdf"> https://projectreactor.io/docs/core/3.2.3.RELEASE/reference/reactor-core-reference-guide-3.2.3.RELEASE.pdf</a></p>
+<p>[136] react-agent-framework<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/react-agent-framework"> https://www.npmjs.com/package/react-agent-framework</a></p>
+<p>[137] Main add rocketmqa2a component #990<a target="_blank" rel="noopener" href="https://github.com/agentscope-ai/agentscope-java/pull/990/files"> https://github.com/agentscope-ai/agentscope-java/pull/990/files</a></p>
+<p>[138] An AI-Assisted Thermodynamic Equilibrium Simulator: A Case Study on Steam Methane Reforming in Isothermal and Adiabatic Reactors<a target="_blank" rel="noopener" href="https://mdpi-res.com/d_attachment/processes/processes-13-02508/article_deploy/processes-13-02508.pdf?version=1754667142"> https://mdpi-res.com/d_attachment&#x2F;processes&#x2F;processes-13-02508&#x2F;article_deploy&#x2F;processes-13-02508.pdf?version&#x3D;1754667142</a></p>
+<p>[139] LLM-Based Integrated Control Agent System for Nuclear Reactor<a target="_blank" rel="noopener" href="https://www.kns.org/files/pre_paper/53/25S-141-%EC%9D%B4%EC%9C%A4%ED%91%9C.pdf"> https://www.kns.org/files/pre_paper&#x2F;53&#x2F;25S-141-%EC%9D%B4%EC%9C%A4%ED%91%9C.pdf</a></p>
+<p>[140] An AI-Driven Cyber-Physical Testbed for Small-Scale Advanced Reactors<a target="_blank" rel="noopener" href="https://www.nrc.gov/docs/ML2507/ML25078A223.pdf"> https://www.nrc.gov/docs/ML2507/ML25078A223.pdf</a></p>
+<p>[141] Performance of AI agents based on reasoning language models on ALD process optimization tasks<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2601.09980"> https://arxiv.org/pdf/2601.09980</a></p>
+<p>[142] An AI-Driven Thermal-Fluid Testbed for Advanced Small Modular Reactors: Integration of Digital Twin and Large Language Models(pdf)<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2507.06399"> https://arxiv.org/pdf/2507.06399</a></p>
+<p>[143] Spring AI Alibaba ： Skills 智能 体 实战<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/7606618902423964968/?region=&mid=7606619260252818226&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=_08TX7Z_hVB.ieo3OpjoLW3y0tcBpX4ZpWyNBWvagpg-&share_version=280700&ts=1775227393&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/7606618902423964968/?region=&amp;mid&#x3D;7606619260252818226&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;_08TX7Z_hVB.ieo3OpjoLW3y0tcBpX4ZpWyNBWvagpg-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227393&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[144] 从 MCP 到生产：用 Azure Functions 构建智能代码片段智能体<a target="_blank" rel="noopener" href="https://reactor.microsoft.com/ja-jp/reactor/events/26597/"> https://reactor.microsoft.com/ja-jp/reactor/events/26597/</a></p>
+<p>[145] A Digital Twin Framework for Generation-IV Reactors with Reinforcement Learning-Enabled Health-Aware Supervisory Control(pdf)<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2506.17258v1"> https://arxiv.org/pdf/2506.17258v1</a></p>
+<p>[146] 基于多智能体强化学习的反应堆功率协调控制方法研究(pdf)<a target="_blank" rel="noopener" href="http://hdlgc.xml-journal.net//cn/article/pdf/preview/10.13832/j.jnpe.2024.080030.pdf"> http://hdlgc.xml-journal.net//cn/article/pdf/preview/10.13832/j.jnpe.2024.080030.pdf</a></p>
+<p>[147] 技术速递|GitHub Copilot SDK 与云原生的完美融合-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/MicrosoftReactor/article/details/157737086"> https://blog.csdn.net/MicrosoftReactor/article/details/157737086</a></p>
+<p>[148] What is a ReAct Agent? | IBM<a target="_blank" rel="noopener" href="https://www.ibm.com/think/topics/react-agent"> https://www.ibm.com/think/topics/react-agent</a></p>
+<p>[149] reactive-agents-ts&#x2F;README.md at main · tylerjrbuell&#x2F;reactive-agents-ts · GitHub<a target="_blank" rel="noopener" href="https://github.com/tylerjrbuell/reactive-agents-ts/blob/main/README.md"> https://github.com/tylerjrbuell/reactive-agents-ts/blob/main/README.md</a></p>
+<p>[150] ReAct Agent 后端架构解析-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/Vita_min_C/article/details/156306344"> https://blog.csdn.net/Vita_min_C&#x2F;article&#x2F;details&#x2F;156306344</a></p>
+<p>[151] Development of an Autonomous Reactor Operation LLM Agent for Real-Time Detection and Proactive Mitigation<a target="_blank" rel="noopener" href="https://www.kns.org/files/pre_paper/54/25A-295-%ED%95%9C%EA%B8%B0%ED%97%8C.pdf"> https://www.kns.org/files/pre_paper&#x2F;54&#x2F;25A-295-%ED%95%9C%EA%B8%B0%ED%97%8C.pdf</a></p>
+<p>[152] Reactive AI Agent Framework<a target="_blank" rel="noopener" href="https://mcpservers.org/servers/tylerjrbuell/reactive-agents"> https://mcpservers.org/servers/tylerjrbuell/reactive-agents</a></p>
+<p>[153] Was ist ein ReAct-Agent?<a target="_blank" rel="noopener" href="https://www.ibm.com/de-de/think/topics/react-agent"> https://www.ibm.com/de-de/think/topics/react-agent</a></p>
+<p>[154] REACTOR USAGE MAXIMIZATION GUIDE<a target="_blank" rel="noopener" href="https://github.com/seanchatmangpt/ai-self-sustaining-system/blob/master/REACTOR-USAGE-MAXIMIZATION.md"> https://github.com/seanchatmangpt/ai-self-sustaining-system/blob/master/REACTOR-USAGE-MAXIMIZATION.md</a></p>
+<p>[155] Write the Spec, Let the Agents Build: A Practical Playbook<a target="_blank" rel="noopener" href="https://reactor.microsoft.com/ja-jp/reactor/events/26850/"> https://reactor.microsoft.com/ja-jp/reactor/events/26850/</a></p>
+<p>[156] 超越LLM:2025年最强Agent设计范式深度解析，引领AI新潮流_agent 测试新范式-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/2401_84204207/article/details/154692977"> https://blog.csdn.net/2401_84204207&#x2F;article&#x2F;details&#x2F;154692977</a></p>
+<p>[157] Python + Agents: Orchestrating advanced multi-agent workflows<a target="_blank" rel="noopener" href="https://reactor.microsoft.com/ja-jp/reactor/events/26692/"> https://reactor.microsoft.com/ja-jp/reactor/events/26692/</a></p>
+<p>[158] Using the ReAct Pattern in AI Agents: Best Practices, Pitfalls &amp; Implementation Tips<a target="_blank" rel="noopener" href="https://metadesignsolutions.com/using-the-react-pattern-in-ai-agents-best-practices-pitfalls-implementation-tips/"> https://metadesignsolutions.com/using-the-react-pattern-in-ai-agents-best-practices-pitfalls-implementation-tips/</a></p>
+<p>[159] Reactive AI Agent Design Patterns<a target="_blank" rel="noopener" href="https://www.restack.io/p/agent-architecture-answer-reactive-ai-agent-design-patterns-cat-ai"> https://www.restack.io/p/agent-architecture-answer-reactive-ai-agent-design-patterns-cat-ai</a></p>
+<p>[160] Was ist ein ReAct-Agent?<a target="_blank" rel="noopener" href="https://www.ibm.com/de-de/think/topics/react-agent"> https://www.ibm.com/de-de/think/topics/react-agent</a></p>
+<p>[161] Build, Scale &amp; Govern AI Agents<a target="_blank" rel="noopener" href="https://reactor.microsoft.com/ja-jp/reactor/events/26786/"> https://reactor.microsoft.com/ja-jp/reactor/events/26786/</a></p>
+<p>[162] ReACT → Plan &amp; Execute → Multi agent ， 三大 架构 解锁 AI 智能 体 进阶 （ 以 气象 场景 为 例 讲解 ） # 气象 # 大模型 # 学习 # 知识 分析 # 教程<a target="_blank" rel="noopener" href="https://www.iesdouyin.com/share/video/7537217586577149193/?region=&mid=7537217641170144051&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&video_share_track_ver=&titleType=title&share_sign=wuxEv0WYbGNInrx1lsS8YVqfDfobg8Ttpz.K9tB9YjM-&share_version=280700&ts=1775227427&from_aid=1128&from_ssr=1&share_track_info=%7B%22link_description_type%22:%22%22%7D"> https://www.iesdouyin.com/share/video/7537217586577149193/?region=&amp;mid&#x3D;7537217641170144051&amp;u_code&#x3D;0&amp;did&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;iid&#x3D;MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&amp;with_sec_did&#x3D;1&amp;video_share_track_ver&#x3D;&amp;titleType&#x3D;title&amp;share_sign&#x3D;wuxEv0WYbGNInrx1lsS8YVqfDfobg8Ttpz.K9tB9YjM-&amp;share_version&#x3D;280700&amp;ts&#x3D;1775227427&amp;from_aid&#x3D;1128&amp;from_ssr&#x3D;1&amp;share_track_info&#x3D;%7B%22link_description_type%22%3A%22%22%7D</a></p>
+<p>[163] 从 MCP 到生产：用 Azure Functions 构建智能代码片段智能体<a target="_blank" rel="noopener" href="https://reactor.microsoft.com/ja-jp/reactor/events/26597/"> https://reactor.microsoft.com/ja-jp/reactor/events/26597/</a></p>
+<p>[164] AI智能体(六):架构-36氪<a target="_blank" rel="noopener" href="https://m.36kr.com/p/3254946900799233"> https://m.36kr.com/p/3254946900799233</a></p>
+<p>[165] 构建稳健智能体AI系统的五种基本设计模式_ReAct_循环_评判<a target="_blank" rel="noopener" href="https://it.sohu.com/a/992790658_185201"> https://it.sohu.com/a/992790658_185201</a></p>
+<p>[166] 从0到1开发ReAct智能体:原理、实现与最佳实践_react: synergizing reasoning and acting in languag-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/Liudef06/article/details/159478070"> https://blog.csdn.net/Liudef06/article/details/159478070</a></p>
+<p>[167] Complete Agentic AI Design Patterns Catalogue(pdf)<a target="_blank" rel="noopener" href="https://web3.arxiv.org/src/2601.03624v2/anc/agentic-patterns-catalogue-v1.0.pdf"> https://web3.arxiv.org/src/2601.03624v2/anc/agentic-patterns-catalogue-v1.0.pdf</a></p>
+<p>[168] ReActエージェントとは<a target="_blank" rel="noopener" href="https://www.ibm.com/jp-ja/think/topics/react-agent"> https://www.ibm.com/jp-ja/think/topics/react-agent</a></p>
+<p>[169] ReAct (Reasoning Acting)<a target="_blank" rel="noopener" href="https://github.com/joehubert/ai-agent-design-patterns/wiki/ReAct-(Reasoning---Acting)/77dad35f495606cb9340e12f111c744d5b0cb6a3"> https://github.com/joehubert/ai-agent-design-patterns/wiki/ReAct-(Reasoning---Acting)/77dad35f495606cb9340e12f111c744d5b0cb6a3</a></p>
+<p>[170] 收藏级|aiagent架构全解析(含langgraph实战)，程序员小白也能上手大模型应用<a target="_blank" rel="noopener" href="https://blog.csdn.net/xxue345678/article/details/157940647"> https://blog.csdn.net/xxue345678/article/details/157940647</a></p>
+<p>[171] zero2agent&#x2F;specs&#x2F;E01-read-and-search&#x2F;S001-react-basic&#x2F;deep-dive&#x2F;01-react-pattern.md at main · alienzhou&#x2F;zero2agent · GitHub<a target="_blank" rel="noopener" href="https://github.com/alienzhou/zero2agent/blob/main/specs/E01-read-and-search/S001-react-basic/deep-dive/01-react-pattern.md"> https://github.com/alienzhou/zero2agent/blob/main/specs/E01-read-and-search/S001-react-basic/deep-dive/01-react-pattern.md</a></p>
+<p>[172] What is a ReAct Agent? | IBM<a target="_blank" rel="noopener" href="https://www.ibm.com/think/topics/react-agent"> https://www.ibm.com/think/topics/react-agent</a></p>
+<p>[173] Reactive Agent Architectures: How Simple AI Models Respond to Dynamic Environments<a target="_blank" rel="noopener" href="https://smythos.com/developers/agent-development/reactive-agent-architectures/"> https://smythos.com/developers/agent-development/reactive-agent-architectures/</a></p>
+<p>[174] Light Water Reactor Sustainability Program: A Full-scale Demonstration of Pressurized Water Reactor Core Design Optimization using Multi-Cycle Optimization Methodology(pdf)<a target="_blank" rel="noopener" href="https://lwrs.inl.gov/content/uploads/11/2024/09/INL-RPT-24-80449_PRLO_September2024.pdf"> https://lwrs.inl.gov/content/uploads/11/2024/09/INL-RPT-24-80449_PRLO_September2024.pdf</a></p>
+<p>[175] Virtual models paving the way for advanced nuclear reactors</p>
+<p>science<a target="_blank" rel="noopener" href="https://www.alcf.anl.gov/news/virtual-models-paving-way-advanced-nuclear-reactors"> https://www.alcf.anl.gov/news/virtual-models-paving-way-advanced-nuclear-reactors</a></p>
+<p>[176] Engineers develop faster, more accurate AI algorithm for improving nuclear reactor performance<a target="_blank" rel="noopener" href="https://www.purdue.edu/newsroom/releases/2024/Q2/engineers-develop-faster-more-accurate-ai-algorithm-for-improving-nuclear-reactor-performance.html"> https://www.purdue.edu/newsroom/releases/2024/Q2/engineers-develop-faster-more-accurate-ai-algorithm-for-improving-nuclear-reactor-performance.html</a></p>
+<p>[177] AI&#x2F;ML Advanced Reactor<a target="_blank" rel="noopener" href="https://www.anl.gov/nse/ai-ml/advanced-reactor"> https://www.anl.gov/nse/ai-ml/advanced-reactor</a></p>
+<p>[178] ISU Chemical boosts reactor yield prediction accuracy to 99.7%<a target="_blank" rel="noopener" href="https://www.aveva.com/content/dam/aveva/documents/perspectives/success-stories/SuccessStory_AVEVA_ISUChemical.pdf"> https://www.aveva.com/content/dam/aveva/documents/perspectives/success-stories/SuccessStory_AVEVA_ISUChemical.pdf</a></p>
+<p>[179] 反应工程中人工智能的优化.pdf-原创力文档<a target="_blank" rel="noopener" href="https://m.book118.com/html/2025/0808/7113050114010143.shtm"> https://m.book118.com/html/2025/0808/7113050114010143.shtm</a></p>
+<p>[180] What If AI Ran Leaner?<a target="_blank" rel="noopener" href="https://www.arc.ai/blogs/what-if-ai-ran-leaner"> https://www.arc.ai/blogs/what-if-ai-ran-leaner</a></p>
+<p>[181] 每日一博 - Kafka、Reactor、NGINX的背压控制与性能调优_51CTO博客_flink 背压会导致kafka积压吗?<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15239532/14531567"> https://blog.51cto.com/u_15239532&#x2F;14531567</a></p>
+<p>[182] 背压策略怎么选?深入对比RxJava、Project Reactor中的6种背压模型-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/VarIsle/article/details/155573130"> https://blog.csdn.net/VarIsle/article/details/155573130</a></p>
+<p>[183] Reactor响应式编程系列(二)- 背压策略BackPressure_reactor 背压实现原理-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/zong_0915/article/details/115048075"> https://blog.csdn.net/zong_0915&#x2F;article&#x2F;details&#x2F;115048075</a></p>
+<p>[184] reactor3 源码分析_51CTO博客_mob64ca140a59b0的技术博客_51CTO博客<a target="_blank" rel="noopener" href="https://blog.51cto.com/u_16213658/14490348"> https://blog.51cto.com/u_16213658&#x2F;14490348</a></p>
+<p>[185] [Project Reactor] 8. Reactor에서의 Backpressure: 과도한 데이터 흐름을 제어하는 방법<a target="_blank" rel="noopener" href="https://velog.io/@yin/Reactive-Programming-Reactor%EC%97%90%EC%84%9C%EC%9D%98-Backpressure-%EA%B3%BC%EB%8F%84%ED%95%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%9D%90%EB%A6%84%EC%9D%84-%EC%A0%9C%EC%96%B4%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95"> https:&#x2F;&#x2F;velog.io&#x2F;@yin&#x2F;Reactive-Programming-Reactor%EC%97%90%EC%84%9C%EC%9D%98-Backpressure-%EA%B3%BC%EB%8F%84%ED%95%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%9D%90%EB%A6%84%EC%9D%84-%EC%A0%9C%EC%96%B4%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95</a></p>
+<p>[186] Spring AI响应式编程:WebFlux与AI流式处理整合-CSDN博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/gitblog_00958/article/details/151315061"> https://blog.csdn.net/gitblog_00958&#x2F;article&#x2F;details&#x2F;151315061</a></p>
+<p>[187] Reactive Java apps feeling sluggish? Here’s why<a target="_blank" rel="noopener" href="https://toxigon.com/reactive-programming-mistakes-that-slow-down-your-java-apps"> https://toxigon.com/reactive-programming-mistakes-that-slow-down-your-java-apps</a></p>
+<p>[188] Performance Optimization of Full-Stack Applications Using Reactive Frontend and Backend Integration(pdf)<a target="_blank" rel="noopener" href="https://multiarticlesjournal.com/uploads/articles/IJCRM202542132.pdf"> https://multiarticlesjournal.com/uploads/articles/IJCRM202542132.pdf</a></p>
+<p>[189] Performance Issues In AI Teams<a target="_blank" rel="noopener" href="https://www.restack.io/p/performance-enhancement-strategies-answer-ai-performance-issues-cat-ai"> https://www.restack.io/p/performance-enhancement-strategies-answer-ai-performance-issues-cat-ai</a></p>
+<p>[190] Design: Reactive Multi-Primitive Data Mesh for AI Agent Cognition #1627<a target="_blank" rel="noopener" href="https://github.com/stratalab/strata-core/issues/1627"> https://github.com/stratalab/strata-core/issues/1627</a></p>
+<p>[191] Software Performance Optimization: The Expert Guide for 2025<a target="_blank" rel="noopener" href="https://www.sedai.io/blog/software-performance-optimization-expert-guide"> https://www.sedai.io/blog/software-performance-optimization-expert-guide</a></p>
+<blockquote>
+<p>（注：文档部分内容可能由 AI 生成）</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://note.shisan.me">bngel</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://note.shisan.me/2026/04/03/doubao_reactor_flux_mono_learning/">https://note.shisan.me/2026/04/03/doubao_reactor_flux_mono_learning/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://note.shisan.me" target="_blank">shisan's coding site</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI/">AI</a><a class="post-meta__tags" href="/tags/Reactor/">Reactor</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/04/03/source_reading_agentscope_agent_create_3/" title="【源码笔记-Agentscope】智能体创建（下）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">【源码笔记-Agentscope】智能体创建（下）</div></div><div class="info-2"><div class="info-item-1">ReActAgent</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/26/hello-world/" title="欢迎来到我的博客"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-26</div><div class="info-item-2">欢迎来到我的博客</div></div><div class="info-2"><div class="info-item-1">你好，我是 bngel，欢迎来到我的个人博客！这是使用 Hexo 框架和 Butterfly 主题搭建的博客。 关于这个博客这个博客主要用于记录我的学习笔记和技术思考。我目前专注于 人工智能（AI） 领域的学习，包括但不限于：  机器学习与深度学习基础 大语言模型（LLM）原理与应用 AI 工具的使用与实践 相关论文阅读与总结  除了 AI 相关内容，我也会分享一些后端开发以及与代码相关的心得体会，包括但不限于：  后端架构设计与最佳实践 代码质量与重构技巧 系统设计与性能优化 开发工具与效率提升  博客技术栈本博客使用以下技术构建：  Hexo - 静态博客框架 Butterfly - 美观的 Hexo 主题 GitHub Pages - 博客托管服务  后续计划我会持续更新博客内容，把学习过程中遇到的问题、解决方案以及心得体会记录下来。如果你对我的博客有任何建议或想法，欢迎在评论区留言交流！ </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">bngel</div><div class="author-info-description">十三的兴趣使然</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">✨ Journey into the AI cosmos — where neural networks ignite curiosity, backend systems pulse with precision, and every line of code weaves the future. Dive in, explore, and transform.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Reactor-%E6%A1%86%E6%9E%B6%E6%A6%82%E8%BF%B0%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">一、Reactor 框架概述与核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Reactor-%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B%E4%B8%8E%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 Reactor 框架简介与最新版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%8F%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 反应式编程基础概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Reactor-%E4%B8%8E%E5%85%B6%E4%BB%96%E5%8F%8D%E5%BA%94%E5%BC%8F%E5%BA%93%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 Reactor 与其他反应式库的对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Flux-%E5%92%8C-Mono-%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">二、Flux 和 Mono 的设计哲学与核心特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Flux-%E7%B1%BB%EF%BC%9A0-%E5%88%B0-N-%E4%B8%AA%E5%85%83%E7%B4%A0%E7%9A%84%E5%BC%82%E6%AD%A5%E5%BA%8F%E5%88%97"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 Flux 类：0 到 N 个元素的异步序列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Mono-%E7%B1%BB%EF%BC%9A0-%E6%88%96-1-%E4%B8%AA%E5%85%83%E7%B4%A0%E7%9A%84%E5%BC%82%E6%AD%A5%E7%BB%93%E6%9E%9C"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 Mono 类：0 或 1 个元素的异步结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6%EF%BC%9A%E4%B8%BA%E4%BD%95%E9%80%89%E6%8B%A9%E5%8F%8C%E8%BD%A8%E5%88%B6%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 设计哲学：为何选择双轨制设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 核心特性对比分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Flux-%E5%92%8C-Mono-%E5%9C%A8-AI-%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.</span> <span class="toc-text">三、Flux 和 Mono 在 AI 智能体框架中的应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-AI-%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81%E7%89%B9%E5%BE%81"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 AI 智能体框架中的数据流特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 典型应用场景详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-%E7%8E%AF%E5%A2%83%E6%84%9F%E7%9F%A5%E4%B8%8E%E7%8A%B6%E6%80%81%E6%9B%B4%E6%96%B0"><span class="toc-number">3.2.1.</span> <span class="toc-text">3.2.1 环境感知与状态更新</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-%E5%86%B3%E7%AD%96%E6%8E%A8%E7%90%86%E4%B8%8E%E5%8A%A8%E4%BD%9C%E6%89%A7%E8%A1%8C"><span class="toc-number">3.2.2.</span> <span class="toc-text">3.2.2 决策推理与动作执行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E9%80%9A%E4%BF%A1%E4%B8%8E%E5%8D%8F%E8%B0%83"><span class="toc-number">3.2.3.</span> <span class="toc-text">3.2.3 多智能体通信与协调</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-4-%E5%AE%9E%E6%97%B6%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%A8%A1%E5%9E%8B%E6%9B%B4%E6%96%B0"><span class="toc-number">3.2.4.</span> <span class="toc-text">3.2.4 实时学习与模型更新</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E4%B8%8E-ReAct-%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%BB%93%E5%90%88%E5%BA%94%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 与 ReAct 模式的结合应用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E4%B8%8E%E5%AE%9E%E8%B7%B5%E9%A1%B9%E7%9B%AE"><span class="toc-number">4.</span> <span class="toc-text">四、学习路径规划与实践项目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%AD%A6%E4%B9%A0%E9%98%B6%E6%AE%B5%E5%88%92%E5%88%86%E4%B8%8E%E6%97%B6%E9%97%B4%E5%AE%89%E6%8E%92"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 学习阶段划分与时间安排</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-1-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%9F%BA%E7%A1%80%E5%87%86%E5%A4%87%EF%BC%882-%E5%91%A8%EF%BC%89"><span class="toc-number">4.1.1.</span> <span class="toc-text">4.1.1 第一阶段：基础准备（2 周）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-2-%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9AReactor-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%EF%BC%883-%E5%91%A8%EF%BC%89"><span class="toc-number">4.1.2.</span> <span class="toc-text">4.1.2 第二阶段：Reactor 核心概念（3 周）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-3-%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5%EF%BC%9A%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7%EF%BC%883-%E5%91%A8%EF%BC%89"><span class="toc-number">4.1.3.</span> <span class="toc-text">4.1.3 第三阶段：高级特性（3 周）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-4-%E7%AC%AC%E5%9B%9B%E9%98%B6%E6%AE%B5%EF%BC%9AAI-%E6%99%BA%E8%83%BD%E4%BD%93%E5%BA%94%E7%94%A8%EF%BC%884-%E5%91%A8%EF%BC%89"><span class="toc-number">4.1.4.</span> <span class="toc-text">4.1.4 第四阶段：AI 智能体应用（4 周）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%8E%A8%E8%8D%90%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 推荐学习资源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E4%B8%8E%E6%95%99%E7%A8%8B"><span class="toc-number">4.2.1.</span> <span class="toc-text">4.2.1 官方文档与教程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-%E4%B9%A6%E7%B1%8D%E6%8E%A8%E8%8D%90"><span class="toc-number">4.2.2.</span> <span class="toc-text">4.2.2 书籍推荐</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-3-%E5%9C%A8%E7%BA%BF%E8%AF%BE%E7%A8%8B%E4%B8%8E%E8%A7%86%E9%A2%91"><span class="toc-number">4.2.3.</span> <span class="toc-text">4.2.3 在线课程与视频</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-4-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE%E4%B8%8E%E7%A4%BA%E4%BE%8B"><span class="toc-number">4.2.4.</span> <span class="toc-text">4.2.4 实战项目与示例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%AE%9E%E8%B7%B5%E9%A1%B9%E7%9B%AE%E5%BB%BA%E8%AE%AE"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 实践项目建议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-1-%E5%9F%BA%E7%A1%80%E9%A1%B9%E7%9B%AE%EF%BC%9A%E5%8F%8D%E5%BA%94%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AE%A1%E9%81%93"><span class="toc-number">4.3.1.</span> <span class="toc-text">4.3.1 基础项目：反应式数据处理管道</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-2-%E4%B8%AD%E7%BA%A7%E9%A1%B9%E7%9B%AE%EF%BC%9A%E6%99%BA%E8%83%BD%E8%81%8A%E5%A4%A9%E6%9C%BA%E5%99%A8%E4%BA%BA"><span class="toc-number">4.3.2.</span> <span class="toc-text">4.3.2 中级项目：智能聊天机器人</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-3-%E9%AB%98%E7%BA%A7%E9%A1%B9%E7%9B%AE%EF%BC%9A%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="toc-number">4.3.3.</span> <span class="toc-text">4.3.3 高级项目：多智能体协作系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-4-%E5%88%9B%E6%96%B0%E9%A1%B9%E7%9B%AE%EF%BC%9AAI-%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%AE%9E%E6%97%B6%E5%86%B3%E7%AD%96%E7%B3%BB%E7%BB%9F"><span class="toc-number">4.3.4.</span> <span class="toc-text">4.3.4 创新项目：AI 驱动的实时决策系统</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%A0%B8%E5%BF%83%E6%93%8D%E4%BD%9C%E7%AC%A6%E8%AF%A6%E8%A7%A3%E4%B8%8E%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-number">5.</span> <span class="toc-text">五、核心操作符详解与最佳实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E7%AC%A6%EF%BC%9A%E5%88%9B%E5%BB%BA%E3%80%81%E8%BD%AC%E6%8D%A2%E4%B8%8E%E8%BF%87%E6%BB%A4"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 基础操作符：创建、转换与过滤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-1-%E5%88%9B%E5%BB%BA%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">5.1.1.</span> <span class="toc-text">5.1.1 创建操作符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-2-%E8%BD%AC%E6%8D%A2%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">5.1.2.</span> <span class="toc-text">5.1.2 转换操作符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-3-%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">5.1.3.</span> <span class="toc-text">5.1.3 过滤操作符</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E9%AB%98%E7%BA%A7%E6%93%8D%E4%BD%9C%E7%AC%A6%EF%BC%9A%E7%BB%84%E5%90%88%E3%80%81%E8%81%9A%E5%90%88%E4%B8%8E%E7%AA%97%E5%8F%A3"><span class="toc-number">5.2.</span> <span class="toc-text">5.2 高级操作符：组合、聚合与窗口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-1-%E7%BB%84%E5%90%88%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">5.2.1.</span> <span class="toc-text">5.2.1 组合操作符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-2-%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">5.2.2.</span> <span class="toc-text">5.2.2 聚合操作符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-3-%E7%AA%97%E5%8F%A3%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">5.2.3.</span> <span class="toc-text">5.2.3 窗口操作符</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6%E4%B8%8E%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B"><span class="toc-number">5.3.</span> <span class="toc-text">5.3 线程调度与并发模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-1-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6%E5%9F%BA%E7%A1%80"><span class="toc-number">5.3.1.</span> <span class="toc-text">5.3.1 线程调度基础</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-2-subscribeOn-vs-publishOn"><span class="toc-number">5.3.2.</span> <span class="toc-text">5.3.2 subscribeOn vs publishOn</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-3-%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5"><span class="toc-number">5.3.3.</span> <span class="toc-text">5.3.3 并发处理策略</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E6%81%A2%E5%A4%8D%E7%AD%96%E7%95%A5"><span class="toc-number">5.4.</span> <span class="toc-text">5.4 错误处理与恢复策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-1-%E5%9F%BA%E6%9C%AC%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="toc-number">5.4.1.</span> <span class="toc-text">5.4.1 基本错误处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-2-%E9%AB%98%E7%BA%A7%E6%81%A2%E5%A4%8D%E7%AD%96%E7%95%A5"><span class="toc-number">5.4.2.</span> <span class="toc-text">5.4.2 高级恢复策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-3-%E8%83%8C%E5%8E%8B%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5"><span class="toc-number">5.4.3.</span> <span class="toc-text">5.4.3 背压处理策略</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-Sinks-API-%E4%B8%8E%E7%83%AD%E6%B5%81%E7%AE%A1%E7%90%86"><span class="toc-number">5.5.</span> <span class="toc-text">5.5 Sinks API 与热流管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-5-1-Sinks-API-%E6%A6%82%E8%BF%B0"><span class="toc-number">5.5.1.</span> <span class="toc-text">5.5.1 Sinks API 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-5-2-%E5%88%9B%E5%BB%BA%E7%83%AD%E6%B5%81"><span class="toc-number">5.5.2.</span> <span class="toc-text">5.5.2 创建热流</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-5-3-%E5%86%B7%E6%B5%81%E8%BD%AC%E7%83%AD%E6%B5%81"><span class="toc-number">5.5.3.</span> <span class="toc-text">5.5.3 冷流转热流</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-6-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-number">5.6.</span> <span class="toc-text">5.6 性能优化最佳实践</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-6-1-%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BC%98%E5%8C%96"><span class="toc-number">5.6.1.</span> <span class="toc-text">5.6.1 操作符优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-6-2-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B%E4%BC%98%E5%8C%96"><span class="toc-number">5.6.2.</span> <span class="toc-text">5.6.2 线程模型优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-6-3-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">5.6.3.</span> <span class="toc-text">5.6.3 内存管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-6-4-%E7%9B%91%E6%8E%A7%E4%B8%8E%E8%B0%83%E4%BC%98"><span class="toc-number">5.6.4.</span> <span class="toc-text">5.6.4 监控与调优</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">6.</span> <span class="toc-text">六、常见问题与解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E5%AD%A6%E4%B9%A0%E6%9B%B2%E7%BA%BF%E4%B8%8E%E7%90%86%E8%A7%A3%E9%9A%BE%E7%82%B9"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 学习曲线与理解难点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-1-%E4%BB%8E%E5%91%BD%E4%BB%A4%E5%BC%8F%E5%88%B0%E5%8F%8D%E5%BA%94%E5%BC%8F%E6%80%9D%E7%BB%B4%E8%BD%AC%E6%8D%A2"><span class="toc-number">6.1.1.</span> <span class="toc-text">6.1.1 从命令式到反应式思维转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-2-%E6%93%8D%E4%BD%9C%E7%AC%A6%E9%80%89%E6%8B%A9%E5%9B%B0%E9%9A%BE"><span class="toc-number">6.1.2.</span> <span class="toc-text">6.1.2 操作符选择困难</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-3-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B%E7%90%86%E8%A7%A3%E5%9B%B0%E9%9A%BE"><span class="toc-number">6.1.3.</span> <span class="toc-text">6.1.3 线程模型理解困难</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81%E9%99%B7%E9%98%B1"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 开发实践中的常见陷阱</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-1-%E9%98%BB%E5%A1%9E%E6%93%8D%E4%BD%9C%E5%AF%BC%E8%87%B4%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="toc-number">6.2.1.</span> <span class="toc-text">6.2.1 阻塞操作导致性能问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-2-%E8%83%8C%E5%8E%8B%E5%A4%84%E7%90%86%E4%B8%8D%E5%BD%93%E5%AF%BC%E8%87%B4%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA"><span class="toc-number">6.2.2.</span> <span class="toc-text">6.2.2 背压处理不当导致内存溢出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-3-%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8D%E5%AE%8C%E6%95%B4%E5%AF%BC%E8%87%B4%E7%A8%8B%E5%BA%8F%E5%B4%A9%E6%BA%83"><span class="toc-number">6.2.3.</span> <span class="toc-text">6.2.3 错误处理不完整导致程序崩溃</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-4-%E5%86%B7%E6%B5%81%E4%B8%8E%E7%83%AD%E6%B5%81%E6%B7%B7%E6%B7%86%E5%AF%BC%E8%87%B4%E9%80%BB%E8%BE%91%E9%94%99%E8%AF%AF"><span class="toc-number">6.2.4.</span> <span class="toc-text">6.2.4 冷流与热流混淆导致逻辑错误</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E4%B8%8E%E7%9B%91%E6%8E%A7%E5%BB%BA%E8%AE%AE"><span class="toc-number">6.3.</span> <span class="toc-text">6.3 性能调优与监控建议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-1-%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88%E5%88%86%E6%9E%90"><span class="toc-number">6.3.1.</span> <span class="toc-text">6.3.1 性能瓶颈分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-2-%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5%E6%80%BB%E7%BB%93"><span class="toc-number">6.3.2.</span> <span class="toc-text">6.3.2 优化策略总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-3-%E7%9B%91%E6%8E%A7%E4%BD%93%E7%B3%BB%E5%BB%BA%E8%AE%BE"><span class="toc-number">6.3.3.</span> <span class="toc-text">6.3.3 监控体系建设</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E4%B8%8E-AI-%E6%A1%86%E6%9E%B6%E9%9B%86%E6%88%90%E7%9A%84%E7%89%B9%E6%AE%8A%E8%80%83%E8%99%91"><span class="toc-number">6.4.</span> <span class="toc-text">6.4 与 AI 框架集成的特殊考虑</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-1-%E4%B8%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%A1%86%E6%9E%B6%E7%9A%84%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="toc-number">6.4.1.</span> <span class="toc-text">6.4.1 与机器学习框架的兼容性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-2-%E6%99%BA%E8%83%BD%E4%BD%93%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86"><span class="toc-number">6.4.2.</span> <span class="toc-text">6.4.2 智能体状态管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-3-%E5%AE%9E%E6%97%B6%E6%80%A7%E8%A6%81%E6%B1%82"><span class="toc-number">6.4.3.</span> <span class="toc-text">6.4.3 实时性要求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-4-%E5%8F%AF%E6%89%A9%E5%B1%95%E6%80%A7%E8%AE%BE%E8%AE%A1"><span class="toc-number">6.4.4.</span> <span class="toc-text">6.4.4 可扩展性设计</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E6%80%BB%E7%BB%93%E4%B8%8E%E5%B1%95%E6%9C%9B"><span class="toc-number">7.</span> <span class="toc-text">七、总结与展望</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E5%AD%A6%E4%B9%A0%E6%88%90%E6%9E%9C%E6%80%BB%E7%BB%93"><span class="toc-number">7.1.</span> <span class="toc-text">7.1 学习成果总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E6%9C%AA%E6%9D%A5%E5%8F%91%E5%B1%95%E6%96%B9%E5%90%91"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 未来发展方向</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-1-%E6%8A%80%E6%9C%AF%E5%8F%91%E5%B1%95%E8%B6%8B%E5%8A%BF"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 技术发展趋势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-2-%E8%81%8C%E4%B8%9A%E5%8F%91%E5%B1%95%E5%BB%BA%E8%AE%AE"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 职业发展建议</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E7%BB%93%E8%AF%AD"><span class="toc-number">7.3.</span> <span class="toc-text">7.3 结语</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/source_reading_agentscope_agent_create_3/" title="【源码笔记-Agentscope】智能体创建（下）">【源码笔记-Agentscope】智能体创建（下）</a><time datetime="2026-04-03T15:00:00.000Z" title="发表于 2026-04-03 23:00:00">2026-04-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/doubao_reactor_flux_mono_learning/" title="Reactor 框架 Flux 和 Mono 类学习指南">Reactor 框架 Flux 和 Mono 类学习指南</a><time datetime="2026-04-03T15:00:00.000Z" title="发表于 2026-04-03 23:00:00">2026-04-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/source_reading_agentscope_agent_create_2/" title="【源码笔记-Agentscope】智能体创建（中）">【源码笔记-Agentscope】智能体创建（中）</a><time datetime="2026-04-01T13:00:00.000Z" title="发表于 2026-04-01 21:00:00">2026-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/31/source_reading_agentscope_agent_create/" title="【源码笔记-Agentscope】智能体创建（上）">【源码笔记-Agentscope】智能体创建（上）</a><time datetime="2026-03-31T13:00:00.000Z" title="发表于 2026-03-31 21:00:00">2026-03-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/28/source_reading_agentscope_quickstart/" title="【源码笔记-Agentscope】快速开始与整体概览">【源码笔记-Agentscope】快速开始与整体概览</a><time datetime="2026-03-28T04:00:00.000Z" title="发表于 2026-03-28 12:00:00">2026-03-28</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default_top_img.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By bngel</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
